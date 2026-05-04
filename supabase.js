@@ -18,7 +18,7 @@ async function dbActualizarPuntaje(nombre, puntajeNuevo) {
 }
 
 async function dbResetJugadores() {
-  await sb.from("jugadores").delete().gte("id", 0);
+  await sb.from("jugadores").delete().neq("id", 0);
 }
 
 async function dbSetEstado(categoria, nombre, descripcion, activa) {
