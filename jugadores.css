@@ -1,0 +1,89 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#registro-box, #juego-box {
+  background: #1a1a2e;
+  border: 2px solid #444;
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 340px;
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.4rem; }
+
+.subtitulo { color: #888; font-style: italic; }
+
+input[type="text"] {
+  background: #111;
+  border: 2px solid #555;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #aaa;
+}
+
+button {
+  background: #2a2a4a;
+  border: 2px solid #555;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  width: 100%;
+}
+
+button:hover { background: #3a3a6a; }
+
+.error { color: #cf6679; font-size: 0.85rem; }
+
+#pantalla-pregunta-jugador {
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#jugador-titulo-pregunta { font-size: 1rem; color: #aaa; }
+#jugador-descripcion-pregunta { font-size: 0.95rem; line-height: 1.6; }
+
+#puntaje-propio {
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+#mi-puntaje { font-size: 1.5rem; color: #4caf82; }
+
+.oculto { display: none !important; }

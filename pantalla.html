@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="supabase.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://pomwgcnwygbqakbjizjf.supabase.co wss://pomwgcnwygbqakbjizjf.supabase.co;">
+  <title>Chaos Jeopardy — Pantalla</title>
+  <link rel="stylesheet" href="/pages/chaos/pantalla.css">
+</head>
+<body>
+
+  <!-- Vista default: el círculo -->
+  <div id="vista-default">
+    <div id="circulo">
+      <p>Aquí va el símbolo de caos</p>
+    </div>
+  </div>
+
+  <!-- Vista pregunta: oculta por default -->
+  <div id="vista-pregunta" class="oculto">
+    <div id="box-pregunta">
+      <p id="pantalla-categoria"></p>
+      <h1 id="pantalla-titulo"></h1>
+      <p id="pantalla-descripcion"></p>
+    </div>
+  </div>
+
+  <script src="pantalla.js"></script>
+</body>
+</html>

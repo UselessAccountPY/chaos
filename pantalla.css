@@ -1,0 +1,82 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* --- Vista default: el círculo --- */
+#vista-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#circulo {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 4px solid #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* --- Vista pregunta: el box grande --- */
+#vista-pregunta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#box-pregunta {
+  background: #290303;
+  border: 3px solid #555;
+  border-radius: 16px;
+  padding: 3rem 4rem;
+  max-width: 1500px;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#pantalla-categoria {
+  font-size: 1rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+}
+
+#pantalla-titulo {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+#pantalla-descripcion {
+  font-size: 2.5rem;
+  color: #ccc;
+  line-height: 1.8;
+}
+
+/* --- Utilidad para ocultar --- */
+.oculto {
+  display: none !important;
+}

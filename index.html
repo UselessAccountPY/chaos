@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="supabase.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://pomwgcnwygbqakbjizjf.supabase.co wss://pomwgcnwygbqakbjizjf.supabase.co;">
+  <title>Chaos Jeopardy - Prototype</title>
+  <link href="/pages/chaos/chaostheme.css" rel="stylesheet" type="text/css" media="all">
+</head>
+<body>
+
+  <h1>Chaos Jeopardy</h1>
+  
+  <button onclick="resetJuego()" id="btn-reset">Reset jugadores</button>
+  
+  <div id="category-buttons">
+    <button onclick="loadCategory(0)">Category 1</button>
+    <button onclick="loadCategory(1)">Category 2</button>
+    <button onclick="loadCategory(2)">Category 3</button>
+    <button onclick="loadCategory(3)">Category 4</button>
+    <button onclick="loadCategory(4)">Category 5</button>
+    <button onclick="loadCategory(5)">Category 6</button>
+    <button onclick="loadCategory(6)">Category 7</button>
+    <button onclick="loadCategory(7)">Category 8</button>
+  </div>
+
+  <div id="question-list">
+    <p>Select a category above.</p>
+  </div>
+
+  <script src="/pages/chaos/script.js"></script>
+</body>
+</html>

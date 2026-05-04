@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="supabase.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://pomwgcnwygbqakbjizjf.supabase.co wss://pomwgcnwygbqakbjizjf.supabase.co;">
+  <title>Chaos Jeopardy — Jugadores</title>
+  <link rel="stylesheet" href="/pages/chaos/jugadores.css">
+</head>
+<body>
+
+  <!-- Pantalla de registro -->
+  <div id="vista-registro">
+    <div id="registro-box">
+      <h1>Chaos Jeopardy</h1>
+      <p>Ingresá tu nombre para unirte</p>
+      <input type="text" id="input-nombre" maxlength="10" placeholder="Tu nombre..." />
+      <button onclick="registrarJugador()">Unirse</button>
+      <p id="error-registro" class="error oculto">Ese nombre ya está en uso.</p>
+    </div>
+  </div>
+
+  <!-- Pantalla de espera/juego -->
+  <div id="vista-juego" class="oculto">
+    <div id="juego-box">
+      <h2 id="bienvenida"></h2>
+      <p class="subtitulo">Esperando pregunta...</p>
+
+      <div id="pantalla-pregunta-jugador" class="oculto">
+        <h3 id="jugador-titulo-pregunta"></h3>
+        <p id="jugador-descripcion-pregunta"></p>
+      </div>
+
+      <div id="puntaje-propio">
+        <span>Tu puntaje:</span>
+        <strong id="mi-puntaje">0</strong>
+      </div>
+    </div>
+  </div>
+  
+  <script src="jugadores.js"></script>
+</body>
+</html>
