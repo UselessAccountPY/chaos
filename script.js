@@ -260,6 +260,7 @@ async function renderizarInputsJugadores(question) {
   question.win.forEach(function(w, i) {
     const contenedor = document.getElementById("win-inputs-" + i);
     if (!contenedor) return;
+    contenedor.innerHTML = ""; // ← limpia antes de rerenderizar
     jugadores.forEach(function(j) {
       contenedor.appendChild(crearInputJugador(j.nombre, w.points));
     });
@@ -268,6 +269,7 @@ async function renderizarInputsJugadores(question) {
   question.lose.forEach(function(l, i) {
     const contenedor = document.getElementById("lose-inputs-" + i);
     if (!contenedor) return;
+    contenedor.innerHTML = ""; // ← limpia antes de rerenderizar
     jugadores.forEach(function(j) {
       contenedor.appendChild(crearInputJugador(j.nombre, l.points));
     });
