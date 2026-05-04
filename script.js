@@ -328,3 +328,31 @@ async function resetJuego() {
   await dbSetEstado("", "", "", false);
   alert("Reset hecho.");
 }
+
+
+// Escuchar jugadores nuevos en tiempo real
+function escucharJugadoresNuevos() {
+  sb.channel("jugadores_host")
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "jugadores" },
+      async function() {
+        // Si hay una pregunta abierta, re-renderizar los inputs
+        const estado = await dbLeerEstado();
+        if (estado && estado.activa) {
+          const contenedor = document.getElementById("outcomes-container");
+          if (contenedor) {
+            // Buscar la pregunta activa actual y re-renderizar
+            const categoria = categories.find(c => c.name === estado.categoria);
+            if (categoria) {
+              const pregunta = categoria.questions.find(q => q.text === estado.nombre);
+              if (pregunta) await renderizarInputsJugadores(pregunta);
+            }
+          }
+        }
+      }
+    )
+    .subscribe();
+}
+
+// Llamala al final del archivo
+escucharJugadoresNuevos();
