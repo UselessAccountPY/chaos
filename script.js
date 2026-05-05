@@ -36,18 +36,42 @@ const categories = [
         ]
       },
       {
-        text: "Presentacion",
-        description: "Presentá una presentación por mí",
+        text: "Presentación",
+        description: "Presentá una presentación por mí sin reírte",
         answered: false,
         win: [
           { condition: "Presentó", points: 1000 }
         ],
         lose: [
-          { condition: "Se rió", points: -500 }
+          { condition: "Se rió", points: -1000 }
         ]
       },
-      { text: "Ecolocacion",   points: 300, answered: false},
-      { text: "Busqueda del tesoro",   points: 300, answered: false},
+      {
+        text: "Ecolocación",
+        description: "Usa el poder de la ecolocación para pasar ciego por una ruta desconocida",
+        answered: false,
+        win: [
+          { condition: "Llegó al final", points: 1000 }
+        ],
+        lose: [
+          { condition: "Chocar contra un objeto", points: -200 },
+          { condition: "Se quita la venda", points: -2000 },
+          { condition: "No usó ecolocación", points: -1500 }
+        ]
+      },
+      {
+        text: "Termómetro",
+        description: "Escondí un objeto alrededor nuestro, podés preguntarme la temperatura pero perdés puntos",
+        answered: false,
+        win: [
+          { condition: "Encontró el objeto", points: 1000 }
+        ],
+        lose: [
+          { condition: "Termómetro", points: -200 },
+          { condition: "Se rindió", points: -1000 },
+          { condition: "No usó ecolocación", points: -1500 }
+        ]
+      },
       { text: "Hablá con mi IA",   points: 300, answered: false}
     ]
   },
