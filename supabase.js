@@ -29,3 +29,24 @@ async function dbLeerEstado() {
   const { data } = await sb.from("estado_juego").select("*").eq("id", 1);
   return data?.[0];
 }
+
+// Buzzer
+async function dbBuzzerApretar(nombre) {
+  await sb.from("buzzer").insert({ nombre, tiempo: Date.now() });
+}
+
+async function dbBuzzerLeer() {
+  const { data } = await sb.from("buzzer").select("*").order("tiempo", { ascending: true });
+  return data || [];
+}
+
+async function dbBuzzerReset() {
+  await sb.from("buzzer").delete().neq("id", 0);
+}
+
+// Actualizar estado con modo y puntaje
+async function dbSetEstadoTrivia(categoria, nombre, descripcion, activa, modo, puntajeActivo) {
+  await sb.from("estado_juego")
+    .update({ categoria, nombre, descripcion, activa, modo, puntaje_activo: puntajeActivo })
+    .eq("id", 1);
+}
