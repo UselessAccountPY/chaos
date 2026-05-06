@@ -142,3 +142,11 @@ button:active { background: #4a4a8a; }
   border-color: #666;
   box-shadow: none;
 }
+
+#buzzer-btn.buzzer-desactivado {
+  background: radial-gradient(circle at 35% 35%, #555, #222);
+  border-color: #444;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
