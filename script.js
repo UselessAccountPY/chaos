@@ -158,29 +158,150 @@ const categories = [
     ]
   },
   {
-    name: "Trivia",
-    questions: [
-      { text: "Paraguay",points: 100, answered: false },
-      { text: "Vexología",points: 200, answered: false },
-      { text: "Mujeres",points: 300, answered: false },
-      { text: "Quesos",points: 300, answered: false },
-      { text: "Gramatica",points: 300, answered: false },
-      { text: "Mundiales",points: 300, answered: false },
-      { text: "Abroles",points: 300, answered: false },
-      { text: "Fisica",points: 300, answered: false },
-      { text: "Sentido Comun",points: 300, answered: false },
-      { text: "2010",points: 300, answered: false },
-      { text: "Anatomia",points: 300, answered: false },
-      { text: "Ariel",points: 300, answered: false }
-    ]
-  }
+  name: "Trivia",
+  estrivia: true, // ← flag especial para identificarla
+  questions: [
+    {
+      text: "Paraguay",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "¿Cuál es la capital de Paraguay?" },
+        { puntaje: 200, pregunta: "¿En qué año se fundó Asunción?" },
+        { puntaje: 300, pregunta: "¿Cuál es el río más largo de Paraguay?" },
+        { puntaje: 400, pregunta: "¿Cómo se llama la represa compartida con Brasil?" },
+        { puntaje: 500, pregunta: "¿Cuántos departamentos tiene Paraguay?" }
+      ]
+    },
+    {
+      text: "Vexología",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Mujeres",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Quesos",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Gramatica",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Mundiales",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Árboles",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Física",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Sentido Común",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "2010",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Anatomía",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    },
+    {
+      text: "Ariel",
+      answered: false,
+      niveles: [
+        { puntaje: 100, pregunta: "Pregunta 100 de Vexología" },
+        { puntaje: 200, pregunta: "Pregunta 200 de Vexología" },
+        { puntaje: 300, pregunta: "Pregunta 300 de Vexología" },
+        { puntaje: 400, pregunta: "Pregunta 400 de Vexología" },
+        { puntaje: 500, pregunta: "Pregunta 500 de Vexología" }
+      ]
+    }
+    // ... el resto de subcategorías igual
+  ]
+}
 ];
 
 
 
 // ---- NAVEGACIÓN ---- //
 async function loadCategory(index) {
-  // Apagar pregunta activa en Supabase
   await dbSetEstado("", "", "", false);
 
   const category = categories[index];
@@ -189,13 +310,17 @@ async function loadCategory(index) {
 
   category.questions.forEach(function(question, questionIndex) {
     const btn = document.createElement("button");
-    btn.textContent = "Pregunta " + (questionIndex + 1);
+    btn.textContent = question.text;
     if (question.answered) {
       btn.classList.add("answered-btn");
       btn.textContent += " ✓";
     }
     btn.onclick = function() {
-      loadQuestion(index, questionIndex);
+      if (category.estrivia) {
+        loadTrivia(index, questionIndex);
+      } else {
+        loadQuestion(index, questionIndex);
+      }
     };
     container.appendChild(btn);
   });
@@ -212,7 +337,6 @@ async function loadQuestion(categoryIndex, questionIndex) {
     question.description,
     true
   );
-
   const container = document.getElementById("question-list");
 
   const winRows = question.win.map(function(w, i) {
@@ -269,6 +393,132 @@ async function loadQuestion(categoryIndex, questionIndex) {
   }
 }
 
+async function loadTrivia(categoryIndex, questionIndex) {
+  const question = categories[categoryIndex].questions[questionIndex];
+
+  // Mandar a pantalla grande el box de niveles
+  await dbSetEstadoTrivia(
+    categories[categoryIndex].name,
+    question.text,
+    "",
+    true,
+    "trivia-niveles",
+    0
+  );
+
+  // Activar buzzer automáticamente
+  await dbBuzzerReset();
+
+  const container = document.getElementById("question-list");
+
+  const nivelesHTML = question.niveles.map(function(n) {
+    return `
+      <button class="btn-nivel" onclick="loadTriviaPregunта(${categoryIndex}, ${questionIndex}, ${question.niveles.indexOf(n)})">
+        <span class="nivel-puntaje">${n.puntaje} pts</span>
+      </button>
+    `;
+  }).join("");
+
+  container.innerHTML = `
+    <div class="question-header">
+      <button onclick="loadCategory(${categoryIndex})">← Volver</button>
+      <h2>Trivia — ${question.text}</h2>
+    </div>
+
+    <div class="question-card">
+      <p class="question-description">Seleccioná el nivel de puntaje:</p>
+      <div class="niveles-grid">
+        ${nivelesHTML}
+      </div>
+    </div>
+
+    <div id="buzzer-panel">
+      <h3>Orden del buzzer</h3>
+      <div id="buzzer-lista"></div>
+      <button onclick="resetBuzzer()">🔄 Resetear buzzer</button>
+    </div>
+
+    <div id="puntaje-trivia-panel"></div>
+  `;
+
+  escucharBuzzer();
+}
+
+
+async function loadTriviaPregunта(categoryIndex, questionIndex, nivelIndex) {
+  const question = categories[categoryIndex].questions[questionIndex];
+  const nivel = question.niveles[nivelIndex];
+
+  // Mandar pregunta específica a pantalla grande
+  await dbSetEstadoTrivia(
+    categories[categoryIndex].name,
+    question.text,
+    nivel.pregunta,
+    true,
+    "trivia-pregunta",
+    nivel.puntaje
+  );
+
+  // Mostrar panel de puntaje para asignar
+  const panel = document.getElementById("puntaje-trivia-panel");
+  const jugadores = await dbLeerJugadores();
+
+  const inputsHTML = jugadores.map(function(j) {
+    return `
+      <div class="jugador-input-wrap">
+        <span class="jugador-nombre-label">${j.nombre}</span>
+        <button class="btn-win" onclick="asignarTrivia('${j.nombre}', ${nivel.puntaje})">
+          +${nivel.puntaje}
+        </button>
+        <button class="btn-lose" onclick="asignarTrivia('${j.nombre}', -${nivel.puntaje})">
+          -${nivel.puntaje}
+        </button>
+      </div>
+    `;
+  }).join("");
+
+  panel.innerHTML = `
+    <h3>Asignar puntaje — ${nivel.puntaje} pts</h3>
+    ${inputsHTML}
+  `;
+}
+
+
+async function asignarTrivia(nombre, puntos) {
+  const jugadores = await dbLeerJugadores();
+  const jugador = jugadores.find(j => j.nombre === nombre);
+  if (!jugador) return;
+  await dbActualizarPuntaje(nombre, jugador.puntaje + puntos);
+  mostrarFeedback(nombre, puntos);
+}
+
+
+async function resetBuzzer() {
+  await dbBuzzerReset();
+  document.getElementById("buzzer-lista").innerHTML = "";
+}
+
+
+function escucharBuzzer() {
+  sb.channel("buzzer_host")
+    .on("postgres_changes",
+      { event: "INSERT", schema: "public", table: "buzzer" },
+      async function() {
+        const orden = await dbBuzzerLeer();
+        const lista = document.getElementById("buzzer-lista");
+        if (!lista) return;
+        lista.innerHTML = orden.map(function(b, i) {
+          return `
+            <div class="buzzer-entrada ${i === 0 ? "buzzer-primero" : ""}">
+              <span class="buzzer-pos">${i + 1}°</span>
+              <span class="buzzer-nombre">${b.nombre}</span>
+            </div>
+          `;
+        }).join("");
+      }
+    )
+    .subscribe();
+}
 
 async function renderizarInputsJugadores(question) {
   const jugadores = await dbLeerJugadores();
