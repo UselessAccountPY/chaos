@@ -113,3 +113,32 @@ button:active { background: #4a4a8a; }
 }
 
 .oculto { display: none !important; }
+
+#buzzer-btn {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff4444, #aa0000);
+  border: 6px solid #ff6666;
+  color: white;
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 1rem auto;
+  box-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+  transition: transform 0.1s, box-shadow 0.1s;
+  user-select: none;
+}
+
+#buzzer-btn:active {
+  transform: scale(0.93);
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+}
+
+#buzzer-btn.buzzer-apretado {
+  background: radial-gradient(circle at 35% 35%, #888, #444);
+  border-color: #666;
+  box-shadow: none;
+}
