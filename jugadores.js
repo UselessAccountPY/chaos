@@ -31,18 +31,25 @@ async function registrarJugador() {
 function escucharRealtime() {
   // Escuchar cambios en estado del juego
   sb.channel("estado_juego_jugador")
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "estado_juego" },
-      function(payload) {
-        const record = payload.new;
-        if (record.activa) {
-          mostrarPreguntaJugador(record);
-        } else {
-          ocultarPreguntaJugador();
-        }
+  .on("postgres_changes",
+    { event: "*", schema: "public", table: "estado_juego" },
+    function(payload) {
+      const record = payload.new;
+      if (!record.activa) {
+        ocultarPreguntaJugador();
+        ocultarBuzzer();
+        return;
       }
-    )
-    .subscribe();
+      if (record.modo === "trivia-niveles" || record.modo === "trivia-pregunta") {
+        mostrarPreguntaJugador(record);
+        mostrarBuzzer();
+      } else {
+        mostrarPreguntaJugador(record);
+        ocultarBuzzer();
+      }
+    }
+  )
+  .subscribe();
 
   // Escuchar cambios en puntajes
   sb.channel("jugadores_puntaje")
@@ -70,4 +77,26 @@ function mostrarPreguntaJugador(estado) {
 function ocultarPreguntaJugador() {
   document.getElementById("pantalla-pregunta-jugador").classList.add("oculto");
   document.querySelector(".subtitulo").textContent = "Esperando pregunta...";
+}
+
+function mostrarBuzzer() {
+  document.getElementById("buzzer-btn").classList.remove("oculto");
+}
+
+function ocultarBuzzer() {
+  document.getElementById("buzzer-btn").classList.add("oculto");
+}
+
+async function aprestarBuzzer() {
+  if (!miNombre) return;
+  await dbBuzzerApretar(miNombre);
+
+  // Feedback visual — el botón se oscurece al apretar
+  const btn = document.getElementById("buzzer-btn");
+  btn.classList.add("buzzer-apretado");
+  btn.textContent = "✓";
+  setTimeout(function() {
+    btn.classList.remove("buzzer-apretado");
+    btn.textContent = "●";
+  }, 1500);
 }
