@@ -22,7 +22,9 @@ async function dbResetJugadores() {
 }
 
 async function dbSetEstado(categoria, nombre, descripcion, activa) {
-  await sb.from("estado_juego").update({ categoria, nombre, descripcion, activa }).eq("id", 1);
+  await sb.from("estado_juego")
+    .update({ categoria, nombre, descripcion, activa, modo: "normal", puntaje_activo: 0 })
+    .eq("id", 1);
 }
 
 async function dbLeerEstado() {
@@ -45,8 +47,13 @@ async function dbBuzzerReset() {
 }
 
 // Actualizar estado con modo y puntaje
-async function dbSetEstadoTrivia(categoria, nombre, descripcion, activa, modo, puntajeActivo) {
+async function dbSetEstadoTrivia(categoria, nombre, descripcion, activa, modo, puntajeActivo, buzzerActivo = false) {
   await sb.from("estado_juego")
-    .update({ categoria, nombre, descripcion, activa, modo, puntaje_activo: puntajeActivo })
+    .update({ categoria, nombre, descripcion, activa, modo, puntaje_activo: puntajeActivo, buzzer_activo: buzzerActivo })
     .eq("id", 1);
+}
+
+// Nueva función solo para cambiar el buzzer
+async function dbSetBuzzer(activo) {
+  await sb.from("estado_juego").update({ buzzer_activo: activo }).eq("id", 1);
 }
