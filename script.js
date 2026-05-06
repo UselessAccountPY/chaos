@@ -396,24 +396,23 @@ async function loadQuestion(categoryIndex, questionIndex) {
 async function loadTrivia(categoryIndex, questionIndex) {
   const question = categories[categoryIndex].questions[questionIndex];
 
-  // Mandar a pantalla grande el box de niveles
   await dbSetEstadoTrivia(
     categories[categoryIndex].name,
     question.text,
     "",
     true,
     "trivia-niveles",
-    0
+    0,
+    false // buzzer desactivado al inicio
   );
 
-  // Activar buzzer automáticamente
   await dbBuzzerReset();
 
   const container = document.getElementById("question-list");
 
-  const nivelesHTML = question.niveles.map(function(n) {
+  const nivelesHTML = question.niveles.map(function(n, i) {
     return `
-      <button class="btn-nivel" onclick="loadTriviaPregunта(${categoryIndex}, ${questionIndex}, ${question.niveles.indexOf(n)})">
+      <button class="btn-nivel" onclick="loadTriviaPregunта(${categoryIndex}, ${questionIndex}, ${i})">
         <span class="nivel-puntaje">${n.puntaje} pts</span>
       </button>
     `;
@@ -432,16 +431,42 @@ async function loadTrivia(categoryIndex, questionIndex) {
       </div>
     </div>
 
+    <div id="buzzer-controles">
+      <button id="btn-habilitar-buzzer" onclick="habilitarBuzzer()">
+        🟢 Habilitar buzzer
+      </button>
+      <button onclick="resetBuzzer()">🔄 Resetear buzzer</button>
+    </div>
+
     <div id="buzzer-panel">
       <h3>Orden del buzzer</h3>
       <div id="buzzer-lista"></div>
-      <button onclick="resetBuzzer()">🔄 Resetear buzzer</button>
     </div>
 
     <div id="puntaje-trivia-panel"></div>
   `;
 
   escucharBuzzer();
+}
+
+async function habilitarBuzzer() {
+  await dbSetBuzzer(true);
+  document.getElementById("btn-habilitar-buzzer").textContent = "🔴 Desactivar buzzer";
+  document.getElementById("btn-habilitar-buzzer").onclick = desactivarBuzzer;
+}
+
+async function desactivarBuzzer() {
+  await dbSetBuzzer(false);
+  document.getElementById("btn-habilitar-buzzer").textContent = "🟢 Habilitar buzzer";
+  document.getElementById("btn-habilitar-buzzer").onclick = habilitarBuzzer;
+}
+
+async function resetBuzzer() {
+  await dbBuzzerReset();
+  await dbSetBuzzer(false);
+  document.getElementById("buzzer-lista").innerHTML = "";
+  document.getElementById("btn-habilitar-buzzer").textContent = "🟢 Habilitar buzzer";
+  document.getElementById("btn-habilitar-buzzer").onclick = habilitarBuzzer;
 }
 
 
