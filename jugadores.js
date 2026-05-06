@@ -42,7 +42,11 @@ function escucharRealtime() {
       }
       if (record.modo === "trivia-niveles" || record.modo === "trivia-pregunta") {
         mostrarPreguntaJugador(record);
-        mostrarBuzzer();
+        if (record.buzzer_activo) {
+          activarBuzzer();
+        } else {
+          desactivarBuzzer();
+        }
       } else {
         mostrarPreguntaJugador(record);
         ocultarBuzzer();
@@ -87,11 +91,23 @@ function ocultarBuzzer() {
   document.getElementById("buzzer-btn").classList.add("oculto");
 }
 
+function activarBuzzer() {
+  mostrarBuzzer();
+  const btn = document.getElementById("buzzer-btn");
+  btn.classList.remove("buzzer-desactivado");
+  btn.onclick = aprestarBuzzer;
+}
+
+function desactivarBuzzer() {
+  mostrarBuzzer();
+  const btn = document.getElementById("buzzer-btn");
+  btn.classList.add("buzzer-desactivado");
+  btn.onclick = null; // no hace nada al apretar
+}
+
 async function aprestarBuzzer() {
   if (!miNombre) return;
   await dbBuzzerApretar(miNombre);
-
-  // Feedback visual — el botón se oscurece al apretar
   const btn = document.getElementById("buzzer-btn");
   btn.classList.add("buzzer-apretado");
   btn.textContent = "✓";
