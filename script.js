@@ -446,7 +446,9 @@ async function loadTrivia(categoryIndex, questionIndex) {
     <div id="puntaje-trivia-panel"></div>
   `;
 
+  // Al final de loadTrivia, después de escucharBuzzer()
   escucharBuzzer();
+  await actualizarListaBuzzer(); // ← carga entradas existentes al abrir
 }
 
 async function habilitarBuzzer() {
@@ -525,24 +527,31 @@ async function resetBuzzer() {
 
 
 function escucharBuzzer() {
+  // Evitar suscripciones duplicadas
+  sb.channel("buzzer_host").unsubscribe();
+
   sb.channel("buzzer_host")
     .on("postgres_changes",
       { event: "INSERT", schema: "public", table: "buzzer" },
       async function() {
-        const orden = await dbBuzzerLeer();
-        const lista = document.getElementById("buzzer-lista");
-        if (!lista) return;
-        lista.innerHTML = orden.map(function(b, i) {
-          return `
-            <div class="buzzer-entrada ${i === 0 ? "buzzer-primero" : ""}">
-              <span class="buzzer-pos">${i + 1}°</span>
-              <span class="buzzer-nombre">${b.nombre}</span>
-            </div>
-          `;
-        }).join("");
+        await actualizarListaBuzzer();
       }
     )
     .subscribe();
+}
+
+async function actualizarListaBuzzer() {
+  const lista = document.getElementById("buzzer-lista");
+  if (!lista) return; // si no existe el div, no hacer nada
+  const orden = await dbBuzzerLeer();
+  lista.innerHTML = orden.map(function(b, i) {
+    return `
+      <div class="buzzer-entrada ${i === 0 ? "buzzer-primero" : ""}">
+        <span class="buzzer-pos">${i + 1}°</span>
+        <span class="buzzer-nombre">${b.nombre}</span>
+      </div>
+    `;
+  }).join("");
 }
 
 async function renderizarInputsJugadores(question) {
