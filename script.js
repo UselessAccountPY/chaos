@@ -88,31 +88,228 @@ const categories = [
   {
     name: "Pelada",
     questions: [
-      { text: "Llamada Preescrita",points: 100, answered: false },
-      { text: "Historia",points: 200, answered: false },
-      { text: "Actuacion",points: 300, answered: false },
-      { text: "Baile",points: 300, answered: false },
-      { text: "Karaoke",points: 300, answered: false },
-      { text: "Payaso",points: 300, answered: false },
-      { text: "Loro",points: 300, answered: false },
-      { text: "Try not to cringe",points: 300, answered: false },
-      { text: "Freestyle",points: 300, answered: false }
+      {
+        text: "Llamada Preseescrita",
+        description: "Llamale a alguien sabiendo 5 palabras elegidas por nosotros que debes incluir en la conversación sin que se de cuenta la persona llamada",
+        answered: false,
+        win: [
+          { condition: "Puntos por palabra", points: 150 }
+        ],
+        lose: [
+          { condition: "No le contestó", points: -300 },
+          { condition: "Pilló que algo andaba mal", points: -500 },
+          { condition: "Se rindió antes de decir las 5 palabras", points: -400 },
+        ]
+      },
+      {
+        text: "Historia",
+        description: "Subí una historia con una oración creada por los demás jugadores",
+        answered: false,
+        win: [
+          { condition: "Publicó en una red social", points: 350 }
+        ],
+        lose: [
+          { condition: "No publicar", points: -700 }
+        ]
+      },
+      {
+        text: "Improvización",
+        description: "Hacé la improvisación con el tema elegido por los demás jugadores",
+        answered: false,
+        win: [
+          { condition: "Realizó la improvización", points: 350 },
+          { condition: "Hizo reír a alguien", points: 100 }
+        ],
+        lose: [
+          { condition: "Se rió", points: -150 },
+          { condition: "Salió del personaje", points: -100 },
+          { condition: "No hizo la improvización", points: -700 }
+        ]
+      },
+      {
+        text: "Baile",
+        description: "Tenes que hacer el baile elegido por los demás jugadores",
+        answered: false,
+        win: [
+          { condition: "Bailó", points: 350 },
+        ],
+        lose: [
+          { condition: "No bailó", points: -700 }
+        ]
+      },
+      {
+        text: "A Capela",
+        description: "Cantá la canción elegida por los jugadores",
+        answered: false,
+        win: [
+          { condition: "Cantó", points: 350 },
+        ],
+        lose: [
+          { condition: "No cantó", points: -700 }
+        ]
+      },
+      {
+        text: "Chistoso",
+        description: "Contá mis chistes",
+        answered: false,
+        win: [
+          { condition: "Hizo reir a una persona", points: 350 },
+        ],
+        lose: [
+          { condition: "No hizo reír a nadie", points: -700 }
+        ]
+      },
+      {
+        text: "Loro",
+        description: "Imitá estos sonidos",
+        answered: false,
+        win: [
+          { condition: "Imitó bien", points: 75 },
+        ],
+        lose: [
+          { condition: "Imitó mal", points: -100 }
+        ]
+      },
+      {
+        text: "Resistí el cringe",
+        description: "Camos a pasar uno a uno e intentar hacerte cringear",
+        answered: false,
+        win: [
+          { condition: "Resistió", points: 350 },
+        ],
+        lose: [
+          { condition: "No resisiió", points: -700 }
+        ]
+      },
+      {
+        text: "Freestyle",
+        description: "Lográ tirar barras y hacer un freestyle minimamente decente",
+        answered: false,
+        win: [
+          { condition: "Freestyleó", points: 350 },
+        ],
+        lose: [
+          { condition: "No se bancó", points: -700 },
+          { condition: "No rimó", points: -50 }
+        ]
+      },
     ]
   },
   {
     name: "Suerte",
     questions: [
-      { text: "Moneda",points: 100, answered: false },
-      { text: "Dado",points: 200, answered: false },
-      { text: "Temperatura",points: 300, answered: false },
-      { text: "Hora",points: 300, answered: false },
-      { text: "Norte",points: 300, answered: false },
-      { text: "Ndapytai",points: 300, answered: false },
-      { text: "PPM",points: 300, answered: false },
-      { text: "Telepatía",points: 300, answered: false},
-      { text: "Frasco",points: 300, answered: false },
-      { text: "Receta",points: 300, answered: false },
-      { text: "Comer",points: 300, answered: false }
+      {
+        text: "Moneda",
+        description: "¿Cara o cruz?",
+        answered: false,
+        win: [
+          { condition: "Acertó", points: 500 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Distancia",
+        description: "A cuantos kilómetros estamos del lugar seleccionado por los demás jugadores, tolerancia de +/- 1.5km",
+        answered: false,
+        win: [
+          { condition: "Acertó", points: 500 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Temperatura",
+        description: "Cuantos grados hacen ahora mismo +/- 1ºC",
+        answered: false,
+        win: [
+          { condition: "Acertó", points: 500 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Norte",
+        description: "Apunta al norte +/- 10º",
+        answered: false,
+        win: [
+          { condition: "Acertó", points: 500 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Ndapytai",
+        description: "Ndapytai",
+        answered: false,
+        win: [
+          { condition: "Primero", points: 500 },
+        ],
+        lose: [
+          { condition: "Último", points: -500 }
+        ]
+      },
+      {
+        text: "Música",
+        description: "Decí el BPM de la música seleccionada por los edmás jugadores +/- 5 BPM",
+        answered: false,
+        win: [
+          { condition: "Acertó", points: 500 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Telepatía",
+        description: "En tres intentos intentá decir la misma palabra con otro jugador",
+        answered: false,
+        win: [
+          { condition: "Acertaron", points: 500 },
+          { condition: "Compañero", points: 100 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Frasco",
+        description: "Cuantos arroces hay en este frasco +/- 100",
+        answered: false,
+        win: [
+          { condition: "Acertó", points: 500 },
+        ],
+        lose: [
+          { condition: "Perdió", points: -500 }
+        ]
+      },
+      {
+        text: "Receta",
+        description: "Adiviná que lleva este postre",
+        answered: false,
+        win: [
+          { condition: "Ingrediente correcto", points: 50 },
+        ],
+        lose: [
+          { condition: "Ingrediente faltante", points: -100 },
+          { condition: "Ingrediente extra", points: -50 }
+        ]
+      },
+      {
+        text: "Yummy",
+        description: "Evitá que coma tu osito",
+        answered: false,
+        win: [
+          { condition: "Por osito comido", points: 100 },
+        ],
+        lose: [
+          { condition: "Comí el osito", points: -500 }
+        ]
+      }
     ]
   },
   {
