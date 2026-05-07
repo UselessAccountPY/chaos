@@ -68,11 +68,21 @@ const categories = [
         ],
         lose: [
           { condition: "Termómetro", points: -200 },
-          { condition: "Se rindió", points: -1000 },
-          { condition: "No usó ecolocación", points: -1500 }
+          { condition: "Se rindió", points: -1000 }
         ]
       },
-      { text: "Hablá con mi IA",   points: 300, answered: false}
+      {
+        text: "Hablá con mi IA",
+          description: "Formá una opinión y hacé que mi IA coincida contigo",
+        answered: false,
+        win: [
+          { condition: "Llegaron a un acuerdo", points: 1000 }
+        ],
+        lose: [
+          { condition: "Se rindió", points: -1000 },
+          { condition: "Se quedó sin tokens", points: -500 }
+        ]
+      }
     ]
   },
   {
