@@ -42,22 +42,30 @@ function mostrarPregunta(estado) {
     document.getElementById("vista-trivia-niveles").classList.remove("oculto");
 
   } else if (estado.modo === "trivia-pregunta") {
-    // Resaltar el nivel activo y mostrar pregunta
-    document.getElementById("trivia-categoria-label").textContent = estado.categoria;
-    document.getElementById("trivia-subcategoria").textContent = estado.nombre;
+  document.getElementById("trivia-categoria-label").textContent = estado.categoria;
+  document.getElementById("trivia-subcategoria").textContent = estado.nombre;
 
-    const grid = document.getElementById("trivia-niveles-grid");
-    grid.innerHTML = [100, 200, 300, 400, 500].map(function(pts) {
-      const activo = pts === estado.puntaje_activo ? "nivel-box-activo" : "";
-      return `<div class="nivel-box-pantalla ${activo}">${pts}</div>`;
-    }).join("");
+  const grid = document.getElementById("trivia-niveles-grid");
+  grid.innerHTML = [100, 200, 300, 400, 500].map(function(pts) {
+    const activo = pts === estado.puntaje_activo ? "nivel-box-activo" : "";
+    return `<div class="nivel-box-pantalla ${activo}">${pts}</div>`;
+  }).join("");
 
-    document.getElementById("vista-trivia-niveles").classList.remove("oculto");
+  // Mostrar la pregunta dentro del mismo box de trivia
+  let preguntaDiv = document.getElementById("trivia-pregunta-texto");
+  if (!preguntaDiv) {
+    preguntaDiv = document.createElement("p");
+    preguntaDiv.id = "trivia-pregunta-texto";
+    preguntaDiv.style.fontSize = "1.4rem";
+    preguntaDiv.style.color = "#fff";
+    preguntaDiv.style.lineHeight = "1.7";
+    preguntaDiv.style.marginTop = "0.5rem";
+    document.getElementById("box-trivia-niveles").appendChild(preguntaDiv);
+  }
+  preguntaDiv.textContent = estado.descripcion;
 
-    // También mostrar la pregunta debajo
-    document.getElementById("pantalla-titulo").textContent = estado.nombre;
-    document.getElementById("pantalla-descripcion").textContent = estado.descripcion;
-    document.getElementById("vista-pregunta").classList.remove("oculto");
+  document.getElementById("vista-trivia-niveles").classList.remove("oculto");
+  // vista-pregunta se queda oculto — todo está en vista-trivia-niveles
 
   } else {
     // Modo normal
@@ -69,5 +77,6 @@ function mostrarPregunta(estado) {
 
 function mostrarDefault() {
   document.getElementById("vista-pregunta").classList.add("oculto");
+  document.getElementById("vista-trivia-niveles").classList.add("oculto");
   document.getElementById("vista-default").classList.remove("oculto");
 }
