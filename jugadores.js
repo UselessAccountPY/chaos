@@ -1,4 +1,5 @@
 let miNombre = null;
+let yaBuzzee = false; // ← nueva
 
 async function registrarJugador() {
   const input = document.getElementById("input-nombre");
@@ -38,11 +39,13 @@ function escucharRealtime() {
       if (!record.activa) {
         ocultarPreguntaJugador();
         ocultarBuzzer();
+        yaBuzzee = false;
         return;
       }
       if (record.modo === "trivia-niveles" || record.modo === "trivia-pregunta") {
         mostrarPreguntaJugador(record);
         if (record.buzzer_activo) {
+          yaBuzzee = false;
           activarBuzzer();
         } else {
           desactivarBuzzer();
@@ -50,6 +53,7 @@ function escucharRealtime() {
       } else {
         mostrarPreguntaJugador(record);
         ocultarBuzzer();
+        yaBuzzee = false;
       }
     }
   )
@@ -95,24 +99,45 @@ function activarBuzzer() {
   mostrarBuzzer();
   const btn = document.getElementById("buzzer-btn");
   btn.classList.remove("buzzer-desactivado");
-  btn.onclick = aprestarBuzzer;
+
+  if (yaBuzzee) {
+    // Ya apretó — mantener apretado visualmente
+    btn.classList.add("buzzer-apretado");
+    btn.textContent = "✓";
+    btn.onclick = null;
+  } else {
+    btn.classList.remove("buzzer-apretado");
+    btn.textContent = "●";
+    btn.onclick = aprestarBuzzer;
+  }
 }
 
 function desactivarBuzzer() {
   mostrarBuzzer();
   const btn = document.getElementById("buzzer-btn");
-  btn.classList.add("buzzer-desactivado");
-  btn.onclick = null; // no hace nada al apretar
+
+  if (yaBuzzee) {
+    // Mantener visual de apretado aunque esté desactivado
+    btn.classList.remove("buzzer-desactivado");
+    btn.classList.add("buzzer-apretado");
+    btn.textContent = "✓";
+  } else {
+    btn.classList.add("buzzer-desactivado");
+    btn.classList.remove("buzzer-apretado");
+    btn.textContent = "●";
+  }
+  btn.onclick = null;
 }
 
 async function aprestarBuzzer() {
-  if (!miNombre) return;
+  if (!miNombre || yaBuzzee) return;
+  yaBuzzee = true; // bloquear inmediatamente para evitar doble tap
+
   await dbBuzzerApretar(miNombre);
+
   const btn = document.getElementById("buzzer-btn");
+  btn.classList.remove("buzzer-desactivado");
   btn.classList.add("buzzer-apretado");
   btn.textContent = "✓";
-  setTimeout(function() {
-    btn.classList.remove("buzzer-apretado");
-    btn.textContent = "●";
-  }, 1500);
+  btn.onclick = null; // ya no hace nada
 }
