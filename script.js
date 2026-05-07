@@ -87,6 +87,7 @@ const categories = [
   },
   {
     name: "Pelada",
+    estrivia: false,
     questions: [
       {
         text: "Llamada Preseescrita",
