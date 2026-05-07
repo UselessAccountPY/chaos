@@ -39,6 +39,10 @@ function mostrarPregunta(estado) {
       return `<div class="nivel-box-pantalla">${pts}</div>`;
     }).join("");
 
+    // Limpiar pregunta si quedó del nivel anterior
+    const preguntaDiv = document.getElementById("trivia-pregunta-texto");
+    if (preguntaDiv) preguntaDiv.textContent = "";
+
     document.getElementById("vista-trivia-niveles").classList.remove("oculto");
 
   } else if (estado.modo === "trivia-pregunta") {
