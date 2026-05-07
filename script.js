@@ -526,18 +526,26 @@ async function resetBuzzer() {
 }
 
 
-function escucharBuzzer() {
-  // Evitar suscripciones duplicadas
-  sb.channel("buzzer_host").unsubscribe();
+let canalBuzzer = null; // ← variable global, agregala al inicio del archivo
 
-  sb.channel("buzzer_host")
+function escucharBuzzer() {
+  // Si ya hay un canal activo, lo removemos completamente antes de crear uno nuevo
+  if (canalBuzzer) {
+    sb.removeChannel(canalBuzzer);
+    canalBuzzer = null;
+  }
+
+  canalBuzzer = sb.channel("buzzer_host_" + Date.now()) // nombre único cada vez
     .on("postgres_changes",
       { event: "INSERT", schema: "public", table: "buzzer" },
-      async function() {
+      async function(payload) {
+        console.log("Buzzer recibido:", payload); // para verificar en consola
         await actualizarListaBuzzer();
       }
     )
-    .subscribe();
+    .subscribe(function(status) {
+      console.log("Estado canal buzzer:", status); // para verificar en consola
+    });
 }
 
 async function actualizarListaBuzzer() {
