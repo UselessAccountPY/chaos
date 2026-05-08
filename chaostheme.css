@@ -286,3 +286,51 @@ button:hover {
 #puntaje-trivia-panel h3 {
   margin-bottom: 0.8rem;
 }
+
+#vista-dados-host {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.fila-turno {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.turno-nombre {
+  flex: 1;
+  font-weight: bold;
+}
+
+.dado-resultado {
+  background: #1a1a4a;
+  border: 1px solid #4444aa;
+  border-radius: 6px;
+  color: #aaaaff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  min-width: 2.5rem;
+  padding: 0.2rem 0.6rem;
+  text-align: center;
+}
+
+.dado-pendiente {
+  color: #555;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.turno-num {
+  color: #4caf82;
+  font-weight: bold;
+  min-width: 2rem;
+  text-align: center;
+}
