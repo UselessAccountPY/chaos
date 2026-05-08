@@ -78,16 +78,14 @@ async function dbGuardarResultadoDado(nombre, resultado) {
 
 async function dbAsignarTurnos() {
   const { data } = await sb.from("turnos").select("*");
-  if (!data) return;
+  if (!data || data.length === 0) return;
 
-  // Solo asignar a los que no tienen turno ni dado
-  const sinAsignar = data.filter(j => j.resultado_dado === 0 && j.turno === 0);
+  // Forzar comparación numérica
+  const sinAsignar = data.filter(j => Number(j.turno) === 0);
   if (sinAsignar.length === 0) return;
 
-  // Orden aleatorio
-  const shuffled = sinAsignar
-    .map(j => ({ nombre: j.nombre, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort);
+  // Mezclar aleatoriamente
+  const shuffled = [...sinAsignar].sort(() => Math.random() - 0.5);
 
   for (let i = 0; i < shuffled.length; i++) {
     await sb.from("turnos")
