@@ -57,3 +57,7 @@ async function dbSetEstadoTrivia(categoria, nombre, descripcion, activa, modo, p
 async function dbSetBuzzer(activo) {
   await sb.from("estado_juego").update({ buzzer_activo: activo }).eq("id", 1);
 }
+
+async function dbSetFase(fase) {
+  await sb.from("estado_juego").update({ fase }).eq("id", 1);
+}
