@@ -138,3 +138,73 @@ body {
   color: #ffffff;
   box-shadow: 0 0 20px rgba(100, 100, 255, 0.4);
 }
+
+#vista-lobby {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#lobby-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  width: 100%;
+  padding: 2rem;
+}
+
+/* El círculo en lobby es más grande */
+#vista-lobby #circulo {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 4px solid #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* El círculo durante el juego, tamaño original */
+#circulo-juego {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 4px solid #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+#jugadores-lobby {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 900px;
+}
+
+.jugador-lobby-card {
+  background: #1a1a2e;
+  border: 2px solid #444;
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  animation: aparecer 0.3s ease;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
