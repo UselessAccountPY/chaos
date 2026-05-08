@@ -10,25 +10,21 @@
 </head>
 <body>
 
-  <h1>Chaos Jeopardy</h1>
-  
-  <button onclick="resetJuego()" id="btn-reset">Reset jugadores</button>
-  
-  <div id="category-buttons">
-    <button onclick="loadCategory(0)">Category 1</button>
-    <button onclick="loadCategory(1)">Category 2</button>
-    <button onclick="loadCategory(2)">Category 3</button>
-    <button onclick="loadCategory(3)">Category 4</button>
-    <button onclick="loadCategory(4)">Category 5</button>
-    <button onclick="loadCategory(5)">Category 6</button>
-    <button onclick="loadCategory(6)">Category 7</button>
-    <button onclick="loadCategory(7)">Category 8</button>
+  <div id="vista-lobby-host">
+    <h1>Chaos Jeopardy</h1>
+    <p id="contador-jugadores">0 jugadores conectados</p>
+    <div id="jugadores-lobby-host"></div>
+    <button onclick="resetJuego()">🗑 Resetear jugadores</button>
+    <button id="btn-iniciar" onclick="iniciarJuego()">▶ Iniciar juego</button>
   </div>
-
-  <div id="question-list">
-    <p>Select a category above.</p>
+  
+  <div id="vista-juego-host" class="oculto">
+    <!-- todo el contenido actual del host va acá -->
+    <button onclick="resetJuego()">🗑 Reset jugadores</button>
+    <div id="category-buttons"></div>
+    <div id="question-list"></div>
   </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+  
+    <script src="script.js"></script>
+  </body>
+  </html>
