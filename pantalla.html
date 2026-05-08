@@ -10,14 +10,24 @@
 </head>
 <body>
 
-  <!-- Vista default: el círculo -->
-  <div id="vista-default">
-    <div id="circulo">
+  <!-- Vista lobby -->
+  <div id="vista-lobby">
+    <div id="lobby-contenido">
+      <div id="circulo">
+        <p>Aquí va el símbolo de caos</p>
+      </div>
+      <div id="jugadores-lobby"></div>
+    </div>
+  </div>
+  
+  <!-- Vista default: el círculo solo — se usa durante el juego -->
+  <div id="vista-default" class="oculto">
+    <div id="circulo-juego">
       <p>Aquí va el símbolo de caos</p>
     </div>
   </div>
-
-  <!-- Vista pregunta: oculta por default -->
+  
+  <!-- Vista pregunta -->
   <div id="vista-pregunta" class="oculto">
     <div id="box-pregunta">
       <p id="pantalla-categoria"></p>
@@ -25,7 +35,7 @@
       <p id="pantalla-descripcion"></p>
     </div>
   </div>
-
+  
   <!-- Vista trivia niveles -->
   <div id="vista-trivia-niveles" class="oculto">
     <div id="box-trivia-niveles">
