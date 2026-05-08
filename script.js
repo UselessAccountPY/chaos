@@ -848,10 +848,13 @@ function mostrarFeedback(nombre, puntos) {
 
 
 async function resetJuego() {
-  const confirmar = confirm("¿Seguro? Esto borra todos los jugadores y puntajes.");
+  const confirmar = confirm("¿Seguro? Esto borra todos los jugadores, puntajes y turnos.");
   if (!confirmar) return;
   await dbResetJugadores();
+  await dbResetTurnos();
   await dbSetEstado("", "", "", false);
+  await dbSetFase("lobby");
+  mostrarLobbyHost();
   alert("Reset hecho.");
 }
 
@@ -912,5 +915,63 @@ async function actualizarContadorJugadores() {
 }
 
 async function iniciarJuego() {
-  // Por ahora sin funcionalidad — próximo prompt
+  await dbAsignarTurnos();
+  await dbSetFase("juego");
+  mostrarJuegoHost();
+}
+
+async function darDados() {
+  // Crear fila en turnos por cada jugador que no esté ya
+  const jugadores = await dbLeerJugadores();
+  const turnos = await dbLeerTurnos();
+  const nombresEnTurnos = turnos.map(t => t.nombre);
+
+  for (const j of jugadores) {
+    if (!nombresEnTurnos.includes(j.nombre)) {
+      await dbCrearTurno(j.nombre);
+    }
+  }
+
+  await dbSetFase("dados");
+  mostrarDadosHost();
+}
+
+function mostrarDadosHost() {
+  document.getElementById("vista-lobby-host").classList.add("oculto");
+  document.getElementById("vista-dados-host").classList.remove("oculto");
+  document.getElementById("vista-juego-host").classList.add("oculto");
+  escucharResultadosDados();
+}
+
+function escucharResultadosDados() {
+  sb.channel("turnos_host")
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "turnos" },
+      async function() {
+        await actualizarTablaTurnos();
+      }
+    )
+    .subscribe();
+}
+
+async function actualizarTablaTurnos() {
+  const turnos = await dbLeerTurnos();
+  const contenedor = document.getElementById("tabla-turnos-host");
+  if (!contenedor) return;
+
+  contenedor.innerHTML = turnos.map(function(t) {
+    const dado = t.resultado_dado > 0
+      ? `<span class="dado-resultado">${t.resultado_dado}</span>`
+      : `<span class="dado-pendiente">esperando...</span>`;
+    const turno = t.turno > 0
+      ? `<span class="turno-num">${t.turno}°</span>`
+      : `<span class="dado-pendiente">—</span>`;
+    return `
+      <div class="fila-turno">
+        <span class="turno-nombre">${t.nombre}</span>
+        ${dado}
+        ${turno}
+      </div>
+    `;
+  }).join("");
 }
