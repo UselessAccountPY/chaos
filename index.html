@@ -17,6 +17,13 @@
     <button onclick="resetJuego()">🗑 Resetear jugadores</button>
     <button id="btn-iniciar" onclick="iniciarJuego()">▶ Iniciar juego</button>
   </div>
+
+  <div id="vista-dados-host" class="oculto">
+    <h1>Chaos Jeopardy — Tirada inicial</h1>
+    <p>Los jugadores están tirando el dado para determinar el orden de turnos.</p>
+    <div id="tabla-turnos-host"></div>
+    <button onclick="iniciarJuego()">▶ Iniciar juego</button>
+  </div>
   
   <div id="vista-juego-host" class="oculto">
     <!-- todo el contenido actual del host va acá -->
