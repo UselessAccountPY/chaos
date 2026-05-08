@@ -899,10 +899,7 @@ function mostrarLobbyHost() {
   actualizarContadorJugadores();
 }
 
-function mostrarJuegoHost() {
-  document.getElementById("vista-lobby-host").classList.add("oculto");
-  document.getElementById("vista-juego-host").classList.remove("oculto");
-}
+
 
 async function actualizarContadorJugadores() {
   const jugadores = await dbLeerJugadores();
@@ -918,6 +915,24 @@ async function iniciarJuego() {
   await dbAsignarTurnos();
   await dbSetFase("juego");
   mostrarJuegoHost();
+}
+
+function mostrarJuegoHost() {
+  document.getElementById("vista-lobby-host").classList.add("oculto");
+  document.getElementById("vista-dados-host").classList.add("oculto");
+  document.getElementById("vista-juego-host").classList.remove("oculto");
+
+  // Renderizar los botones de categorías
+  const container = document.getElementById("category-buttons");
+  container.innerHTML = "";
+  categories.forEach(function(category, index) {
+    const btn = document.createElement("button");
+    btn.textContent = category.name;
+    btn.onclick = function() { loadCategory(index); };
+    container.appendChild(btn);
+  });
+
+  document.getElementById("question-list").innerHTML = "<p>Seleccioná una categoría.</p>";
 }
 
 async function darDados() {
