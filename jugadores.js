@@ -15,26 +15,19 @@ async function registrarJugador() {
   }
 
   miNombre = nombre;
+document.getElementById("vista-registro").classList.add("oculto");
 
-  document.getElementById("vista-registro").classList.add("oculto");
+const estado = await dbLeerEstado();
+
+if (estado.fase === "lobby") {
+  document.getElementById("vista-espera").classList.remove("oculto");
+} else if (estado.fase === "dados") {
+  document.getElementById("vista-dados-jugador").classList.remove("oculto");
+} else if (estado.fase === "juego") {
   document.getElementById("vista-juego").classList.remove("oculto");
   document.getElementById("bienvenida").textContent = "¡Hola, " + nombre + "!";
   document.getElementById("mi-puntaje").textContent = existe ? existe.puntaje : 0;
-
-  // Después de registrar, verificar la fase
-  const estado = await dbLeerEstado();
-  
-  if (estado.fase === "lobby") {
-    // Mostrar pantalla de espera
-    document.getElementById("vista-registro").classList.add("oculto");
-    document.getElementById("vista-espera").classList.remove("oculto");
-  } else {
-    // Juego ya empezó
-    document.getElementById("vista-registro").classList.add("oculto");
-    document.getElementById("vista-juego").classList.remove("oculto");
-    document.getElementById("bienvenida").textContent = "¡Hola, " + nombre + "!";
-    document.getElementById("mi-puntaje").textContent = existe ? existe.puntaje : 0;
-    if (estado.activa) mostrarPreguntaJugador(estado);
+  if (estado.activa) mostrarPreguntaJugador(estado);
 }
 
 escucharRealtime();
