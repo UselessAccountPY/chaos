@@ -1,5 +1,6 @@
 let miNombre = null;
 let yaBuzzee = false; // ← nueva
+let yaTire = false;
 
 async function registrarJugador() {
   const input = document.getElementById("input-nombre");
@@ -42,18 +43,22 @@ escucharRealtime();
 function escucharRealtime() {
   // Al inicio de escucharRealtime, antes de los canales existentes
   sb.channel("fase_jugador")
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "estado_juego" },
-      function(payload) {
-        const record = payload.new;
-        if (record.fase === "juego") {
-          document.getElementById("vista-espera").classList.add("oculto");
-          document.getElementById("vista-juego").classList.remove("oculto");
-          document.getElementById("bienvenida").textContent = "¡Hola, " + miNombre + "!";
-        }
+  .on("postgres_changes",
+    { event: "*", schema: "public", table: "estado_juego" },
+    function(payload) {
+      const record = payload.new;
+      if (record.fase === "dados") {
+        document.getElementById("vista-espera").classList.add("oculto");
+        document.getElementById("vista-dados-jugador").classList.remove("oculto");
+        yaTire = false;
+      } else if (record.fase === "juego") {
+        document.getElementById("vista-dados-jugador").classList.add("oculto");
+        document.getElementById("vista-juego").classList.remove("oculto");
+        document.getElementById("bienvenida").textContent = "¡Hola, " + miNombre + "!";
       }
-    )
-    .subscribe();
+    }
+  )
+  .subscribe();
   // Escuchar cambios en estado del juego
   sb.channel("estado_juego_jugador")
   .on("postgres_changes",
@@ -164,4 +169,28 @@ async function aprestarBuzzer() {
   btn.classList.add("buzzer-apretado");
   btn.textContent = "✓";
   btn.onclick = null; // ya no hace nada
+}
+
+async function tirarDado() {
+  if (yaTire || !miNombre) return;
+  yaTire = true;
+
+  // Animación antes del resultado
+  const btn = document.getElementById("btn-dado");
+  const resultado_div = document.getElementById("resultado-dado-jugador");
+  btn.classList.add("dado-girando");
+  btn.textContent = "...";
+
+  // Esperar animación
+  await new Promise(r => setTimeout(r, 1000));
+
+  const resultado = Math.floor(Math.random() * 12) + 1;
+  await dbGuardarResultadoDado(miNombre, resultado);
+
+  btn.classList.remove("dado-girando");
+  btn.textContent = resultado;
+  btn.classList.add("dado-apretado");
+  btn.onclick = null;
+
+  resultado_div.textContent = "Obtuviste " + resultado;
 }
