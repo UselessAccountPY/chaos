@@ -61,3 +61,45 @@ async function dbSetBuzzer(activo) {
 async function dbSetFase(fase) {
   await sb.from("estado_juego").update({ fase }).eq("id", 1);
 }
+
+// Turnos
+async function dbLeerTurnos() {
+  const { data } = await sb.from("turnos")
+    .select("*")
+    .order("turno", { ascending: true });
+  return data || [];
+}
+
+async function dbGuardarResultadoDado(nombre, resultado) {
+  await sb.from("turnos")
+    .update({ resultado_dado: resultado })
+    .eq("nombre", nombre);
+}
+
+async function dbAsignarTurnos() {
+  const { data } = await sb.from("turnos").select("*");
+  if (!data) return;
+
+  // Solo asignar a los que no tienen turno ni dado
+  const sinAsignar = data.filter(j => j.resultado_dado === 0 && j.turno === 0);
+  if (sinAsignar.length === 0) return;
+
+  // Orden aleatorio
+  const shuffled = sinAsignar
+    .map(j => ({ nombre: j.nombre, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort);
+
+  for (let i = 0; i < shuffled.length; i++) {
+    await sb.from("turnos")
+      .update({ turno: i + 1 })
+      .eq("nombre", shuffled[i].nombre);
+  }
+}
+
+async function dbCrearTurno(nombre) {
+  await sb.from("turnos").insert({ nombre, resultado_dado: 0, turno: 0 });
+}
+
+async function dbResetTurnos() {
+  await sb.from("turnos").delete().neq("id", 0);
+}
