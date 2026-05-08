@@ -862,17 +862,13 @@ function escucharJugadoresNuevos() {
     .on("postgres_changes",
       { event: "*", schema: "public", table: "jugadores" },
       async function() {
-        // Si hay una pregunta abierta, re-renderizar los inputs
+        await actualizarContadorJugadores(); // actualiza lobby
         const estado = await dbLeerEstado();
         if (estado && estado.activa) {
-          const contenedor = document.getElementById("outcomes-container");
-          if (contenedor) {
-            // Buscar la pregunta activa actual y re-renderizar
-            const categoria = categories.find(c => c.name === estado.categoria);
-            if (categoria) {
-              const pregunta = categoria.questions.find(q => q.text === estado.nombre);
-              if (pregunta) await renderizarInputsJugadores(pregunta);
-            }
+          const categoria = categories.find(c => c.name === estado.categoria);
+          if (categoria) {
+            const pregunta = categoria.questions.find(q => q.text === estado.nombre);
+            if (pregunta) await renderizarInputsJugadores(pregunta);
           }
         }
       }
@@ -882,3 +878,39 @@ function escucharJugadoresNuevos() {
 
 // Llamala al final del archivo
 escucharJugadoresNuevos();
+
+// Al cargar, verificar fase
+window.addEventListener("load", async function() {
+  const estado = await dbLeerEstado();
+  if (estado.fase === "lobby") {
+    mostrarLobbyHost();
+  } else {
+    mostrarJuegoHost();
+  }
+  escucharJugadoresNuevos();
+});
+
+function mostrarLobbyHost() {
+  document.getElementById("vista-lobby-host").classList.remove("oculto");
+  document.getElementById("vista-juego-host").classList.add("oculto");
+  actualizarContadorJugadores();
+}
+
+function mostrarJuegoHost() {
+  document.getElementById("vista-lobby-host").classList.add("oculto");
+  document.getElementById("vista-juego-host").classList.remove("oculto");
+}
+
+async function actualizarContadorJugadores() {
+  const jugadores = await dbLeerJugadores();
+  document.getElementById("contador-jugadores").textContent =
+    jugadores.length + " jugador" + (jugadores.length !== 1 ? "es" : "") + " conectado" + (jugadores.length !== 1 ? "s" : "");
+  document.getElementById("jugadores-lobby-host").innerHTML =
+    jugadores.map(function(j) {
+      return `<div class="jugador-lobby-card">${j.nombre}</div>`;
+    }).join("");
+}
+
+async function iniciarJuego() {
+  // Por ahora sin funcionalidad — próximo prompt
+}
