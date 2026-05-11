@@ -33,7 +33,7 @@ if (estado.fase === "lobby") {
 escucharRealtime();
 }
 
-function escucharRealtime() {
+async function escucharRealtime() {
   // Al inicio de escucharRealtime, antes de los canales existentes
   sb.channel("fase_jugador")
   .on("postgres_changes",
