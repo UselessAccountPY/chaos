@@ -173,3 +173,9 @@ async function dbSetTurnoActivo(turno) {
     .update({ turno_activo: turno })
     .eq("id", 1);
 }
+
+async function dbTogglePuntajes(mostrar) {
+  await sb.from("estado_juego")
+    .update({ mostrar_puntajes: mostrar })
+    .eq("id", 1);
+}
