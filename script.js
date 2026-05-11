@@ -1001,3 +1001,81 @@ async function actualizarTablaTurnos() {
     `;
   }).join("");
 }
+
+async function asignacionManual() {
+  // Crear filas en turnos por cada jugador que no esté ya
+  const jugadores = await dbLeerJugadores();
+  const turnos = await dbLeerTurnos();
+  const nombresEnTurnos = turnos.map(t => t.nombre);
+
+  for (const j of jugadores) {
+    if (!nombresEnTurnos.includes(j.nombre)) {
+      await dbCrearTurno(j.nombre);
+    }
+  }
+
+  await dbSetFase("manual");
+  mostrarManualHost();
+}
+
+async function mostrarManualHost() {
+  document.getElementById("vista-lobby-host").classList.add("oculto");
+  document.getElementById("vista-juego-host").classList.add("oculto");
+  document.getElementById("vista-dados-host").classList.add("oculto");
+  document.getElementById("vista-manual-host").classList.remove("oculto");
+
+  await renderizarPanelManual();
+  escucharTurnosManual();
+}
+
+async function renderizarPanelManual() {
+  const turnos = await dbLeerTurnos();
+  const contenedor = document.getElementById("tabla-manual-host");
+  if (!contenedor) return;
+
+  contenedor.innerHTML = turnos.map(function(t) {
+    const valor = Number(t.resultado_dado) > 0 ? t.resultado_dado : "";
+    const turnoTexto = Number(t.turno) > 0
+      ? `<span class="turno-num">${t.turno}°</span>`
+      : `<span class="dado-pendiente">—</span>`;
+
+    return `
+      <div class="fila-turno">
+        <span class="turno-nombre">${t.nombre}</span>
+        <input
+          type="number"
+          class="input-dado-manual"
+          min="1" max="12"
+          placeholder="--"
+          value="${valor}"
+          onchange="asignarDadoManual('${t.nombre}', this.value)"
+        />
+        ${turnoTexto}
+      </div>
+    `;
+  }).join("");
+}
+
+async function asignarDadoManual(nombre, valor) {
+  const num = parseInt(valor);
+  if (isNaN(num) || num < 1 || num > 12) return;
+  await dbSetDadoManual(nombre, num);
+}
+
+let canalTurnosManual = null;
+
+function escucharTurnosManual() {
+  if (canalTurnosManual) {
+    sb.removeChannel(canalTurnosManual);
+    canalTurnosManual = null;
+  }
+
+  canalTurnosManual = sb.channel("turnos_manual_" + Date.now())
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "turnos" },
+      async function() {
+        await renderizarPanelManual();
+      }
+    )
+    .subscribe();
+}
