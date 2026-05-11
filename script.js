@@ -1181,3 +1181,15 @@ async function modificarPuntajePanel(nombre, signo) {
 async function siguienteTurno() {
   await dbSiguienteTurno();
 }
+
+async function toggleMostrarPuntajes() {
+  const estado = await dbLeerEstado();
+  const actual = estado?.mostrar_puntajes || false;
+  await dbTogglePuntajes(!actual);
+
+  // Actualizar texto del botón
+  const btn = document.getElementById("btn-mostrar-puntajes");
+  if (btn) {
+    btn.textContent = !actual ? "🏆 Ocultar puntajes" : "🏆 Mostrar puntajes";
+  }
+}
