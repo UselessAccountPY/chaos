@@ -858,14 +858,19 @@ async function resetJuego() {
   alert("Reset hecho.");
 }
 
+let canalJugadores = null; // ← agregá esta variable al inicio del archivo
 
-// Escuchar jugadores nuevos en tiempo real
 function escucharJugadoresNuevos() {
-  sb.channel("jugadores_host")
+  if (canalJugadores) {
+    sb.removeChannel(canalJugadores);
+    canalJugadores = null;
+  }
+
+  canalJugadores = sb.channel("jugadores_host_" + Date.now())
     .on("postgres_changes",
       { event: "*", schema: "public", table: "jugadores" },
       async function() {
-        await actualizarContadorJugadores(); // actualiza lobby
+        await actualizarContadorJugadores();
         const estado = await dbLeerEstado();
         if (estado && estado.activa) {
           const categoria = categories.find(c => c.name === estado.categoria);
