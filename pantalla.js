@@ -41,7 +41,7 @@ function aplicarEstado(estado) {
     return;
   }
 
-  if (estado.fase === "dados") {
+  if (estado.fase === "dados" || estado.fase === "manual") {
     document.getElementById("vista-dados-pantalla").classList.remove("oculto");
     actualizarDadosPantalla();
     return;
