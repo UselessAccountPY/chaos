@@ -931,9 +931,9 @@ async function iniciarJuego() {
 function mostrarJuegoHost() {
   document.getElementById("vista-lobby-host").classList.add("oculto");
   document.getElementById("vista-dados-host").classList.add("oculto");
+  document.getElementById("vista-manual-host").classList.add("oculto");
   document.getElementById("vista-juego-host").classList.remove("oculto");
 
-  // Renderizar los botones de categorías
   const container = document.getElementById("category-buttons");
   container.innerHTML = "";
   categories.forEach(function(category, index) {
@@ -944,6 +944,8 @@ function mostrarJuegoHost() {
   });
 
   document.getElementById("question-list").innerHTML = "<p>Seleccioná una categoría.</p>";
+
+  inicializarPanelControl(); // ← inicializar panel
 }
 
 async function darDados() {
@@ -1078,4 +1080,104 @@ function escucharTurnosManual() {
       }
     )
     .subscribe();
+}
+
+let canalPanelControl = null;
+
+async function inicializarPanelControl() {
+  await renderizarPanelControl();
+
+  if (canalPanelControl) {
+    sb.removeChannel(canalPanelControl);
+    canalPanelControl = null;
+  }
+
+  canalPanelControl = sb.channel("panel_control_" + Date.now())
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "turnos" },
+      async function() { await renderizarPanelControl(); }
+    )
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "jugadores" },
+      async function() { await renderizarPanelControl(); }
+    )
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "estado_juego" },
+      async function() { await renderizarPanelControl(); }
+    )
+    .subscribe();
+}
+
+async function renderizarPanelControl() {
+  const [turnos, jugadores, estado] = await Promise.all([
+    dbLeerTurnos(),
+    dbLeerJugadores(),
+    dbLeerEstado()
+  ]);
+
+  const turnoActivo = Number(estado?.turno_activo) || 1;
+  const ronda = Number(estado?.ronda) || 1;
+
+  // Actualizar contador de rondas
+  const contadorRonda = document.getElementById("contador-ronda");
+  if (contadorRonda) contadorRonda.textContent = "Ronda " + ronda;
+
+  // Ordenar por turno
+  const ordenados = [...turnos].sort((a, b) => Number(a.turno) - Number(b.turno));
+
+  const contenedor = document.getElementById("panel-control-lista");
+  if (!contenedor) return;
+
+  contenedor.innerHTML = ordenados.map(function(t) {
+    const jugador = jugadores.find(j => j.nombre === t.nombre) || { puntaje: 0 };
+    const esSuTurno = Number(t.turno) === turnoActivo;
+
+    return `
+      <div class="panel-fila ${esSuTurno ? "turno-activo-fila" : ""}">
+
+        <div class="panel-indicador ${esSuTurno ? "indicador-verde" : "indicador-rojo"}"></div>
+
+        <div class="panel-info">
+          <span class="panel-nombre">${t.nombre}</span>
+          <span class="panel-turno-num">Turno ${t.turno}°</span>
+        </div>
+
+        <div class="panel-puntaje-control">
+          <span class="panel-puntaje">${jugador.puntaje} pts</span>
+          <div class="panel-puntaje-btns">
+            <input
+              type="number"
+              class="input-puntaje-panel"
+              id="input-panel-${t.nombre}"
+              value="100"
+              min="1"
+            />
+            <button class="btn-sumar"
+              onclick="modificarPuntajePanel('${t.nombre}', 1)">+</button>
+            <button class="btn-restar"
+              onclick="modificarPuntajePanel('${t.nombre}', -1)">−</button>
+          </div>
+        </div>
+
+        <button class="btn-dado-panel" title="Dar dado (próximamente)">🎲</button>
+
+      </div>
+    `;
+  }).join("");
+}
+
+async function modificarPuntajePanel(nombre, signo) {
+  const input = document.getElementById("input-panel-" + nombre);
+  const valor = parseInt(input?.value) || 0;
+  if (valor <= 0) return;
+
+  const jugadores = await dbLeerJugadores();
+  const jugador = jugadores.find(j => j.nombre === nombre);
+  if (!jugador) return;
+
+  await dbActualizarPuntaje(nombre, jugador.puntaje + (valor * signo));
+}
+
+async function siguienteTurno() {
+  await dbSiguienteTurno();
 }
