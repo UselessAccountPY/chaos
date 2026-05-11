@@ -147,3 +147,29 @@ async function dbSetDadoManual(nombre, resultado) {
   // Reutiliza la misma lógica de recálculo de turnos
   await dbGuardarResultadoDado(nombre, resultado);
 }
+
+async function dbSiguienteTurno() {
+  const estado = await dbLeerEstado();
+  const turnos = await dbLeerTurnos();
+  if (!turnos.length) return;
+
+  const maxTurno = Math.max(...turnos.map(t => Number(t.turno)));
+  let turnoActual = Number(estado.turno_activo) || 1;
+  let ronda = Number(estado.ronda) || 1;
+
+  let siguiente = turnoActual + 1;
+  if (siguiente > maxTurno) {
+    siguiente = 1;
+    ronda += 1; // nueva ronda cuando vuelve al primero
+  }
+
+  await sb.from("estado_juego")
+    .update({ turno_activo: siguiente, ronda })
+    .eq("id", 1);
+}
+
+async function dbSetTurnoActivo(turno) {
+  await sb.from("estado_juego")
+    .update({ turno_activo: turno })
+    .eq("id", 1);
+}
