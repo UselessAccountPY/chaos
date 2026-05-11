@@ -71,25 +71,66 @@ async function dbLeerTurnos() {
 }
 
 async function dbGuardarResultadoDado(nombre, resultado) {
+  // 1 — Guardar el resultado del dado
   await sb.from("turnos")
     .update({ resultado_dado: resultado })
     .eq("nombre", nombre);
+
+  // 2 — Leer todos los turnos actualizados
+  const { data } = await sb.from("turnos").select("*");
+  if (!data) return;
+
+  // 3 — Separar los que ya tiraron de los que no
+  const tiraron = data.filter(j => Number(j.resultado_dado) > 0);
+  const noTiraron = data.filter(j => Number(j.resultado_dado) === 0);
+
+  // 4 — Ordenar los que tiraron:
+  //     Mayor dado = turno más temprano
+  //     Empate: se respeta el orden de llegada (turno ya asignado)
+  tiraron.sort(function(a, b) {
+    if (Number(b.resultado_dado) !== Number(a.resultado_dado)) {
+      // Diferente valor — mayor dado va primero
+      return Number(b.resultado_dado) - Number(a.resultado_dado);
+    }
+    // Empate — el que ya tenía turno asignado mantiene su posición
+    // Si ninguno tiene turno (ambos acaban de tirar igual), 
+    // se respeta el orden actual del array (quien llegó antes)
+    const turnoA = Number(a.turno) || 999;
+    const turnoB = Number(b.turno) || 999;
+    return turnoA - turnoB;
+  });
+
+  // 5 — Asignar turnos del 1 en adelante a los que tiraron
+  for (let i = 0; i < tiraron.length; i++) {
+    await sb.from("turnos")
+      .update({ turno: i + 1 })
+      .eq("nombre", tiraron[i].nombre);
+  }
+
+  // 6 — Los que no tiraron quedan sin turno (0)
+  for (const j of noTiraron) {
+    await sb.from("turnos")
+      .update({ turno: 0 })
+      .eq("nombre", j.nombre);
+  }
 }
 
 async function dbAsignarTurnos() {
   const { data } = await sb.from("turnos").select("*");
   if (!data || data.length === 0) return;
 
-  // Forzar comparación numérica
-  const sinAsignar = data.filter(j => Number(j.turno) === 0);
-  if (sinAsignar.length === 0) return;
+  // Solo los que no tiraron (resultado_dado = 0)
+  const noTiraron = data.filter(j => Number(j.resultado_dado) === 0);
+  if (noTiraron.length === 0) return; // todos tiraron, nada que hacer
 
-  // Mezclar aleatoriamente
-  const shuffled = [...sinAsignar].sort(() => Math.random() - 0.5);
+  // El último turno asignado hasta ahora
+  const maxTurno = Math.max(...data.map(j => Number(j.turno) || 0));
 
+  // Asignar turnos siguientes en orden aleatorio
+  const shuffled = [...noTiraron].sort(() => Math.random() - 0.5);
   for (let i = 0; i < shuffled.length; i++) {
     await sb.from("turnos")
-      .update({ turno: i + 1 })
+      .update({ turno: maxTurno + i + 1 })
       .eq("nombre", shuffled[i].nombre);
   }
 }
