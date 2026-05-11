@@ -912,7 +912,15 @@ async function actualizarContadorJugadores() {
 }
 
 async function iniciarJuego() {
+  const turnos = await dbLeerTurnos();
+  console.log("Turnos antes de asignar:", turnos);
+  // fijate si turno es 0 o ya tiene valor
+  
   await dbAsignarTurnos();
+  
+  const turnosDespues = await dbLeerTurnos();
+  console.log("Turnos después de asignar:", turnosDespues);
+  
   await dbSetFase("juego");
   mostrarJuegoHost();
 }
