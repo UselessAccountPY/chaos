@@ -5,7 +5,7 @@
   <script src="supabase.js"></script>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://pomwgcnwygbqakbjizjf.supabase.co wss://pomwgcnwygbqakbjizjf.supabase.co https://cdn.jsdelivr.net;">
-  <title>Chaos Jeopardy - Prototype</title>
+  <title>Chaos - Control</title>
   <link href="chaostheme.css" rel="stylesheet" type="text/css" media="all">
 </head>
 <body>
@@ -27,7 +27,7 @@
   </div>
   
   <div id="vista-dados-host" class="oculto">
-    <h1>Tirada inicial virtual</h1>
+    <h1>Asignación virtual</h1>
     <p>Los jugadores están tirando el dado para determinar el orden de turnos.</p>
     <div id="tabla-turnos-host"></div>
     <button onclick="iniciarJuego()">▶ Iniciar juego</button>
@@ -36,6 +36,7 @@
   <div id="vista-juego-host" class="oculto">
 
     <!-- Panel de control arriba -->
+    <h1>Panel de Control</h1>
     <div id="panel-control">
       <div id="panel-control-header">
         <span id="contador-ronda">Ronda 1</span>
