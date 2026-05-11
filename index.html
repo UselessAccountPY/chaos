@@ -16,8 +16,16 @@
     <div id="jugadores-lobby-host"></div>
     <button onclick="resetJuego()">🗑 Resetear jugadores</button>
     <button onclick="darDados()">🎲 Dar dados</button>
+    <button onclick="asignacionManual()">✏️ Asignación manual</button>
   </div>
 
+  <div id="vista-manual-host" class="oculto">
+    <h1>Chaos Jeopardy — Asignación manual</h1>
+    <p>Ingresá el resultado del dado de cada jugador (1-12).</p>
+    <div id="tabla-manual-host"></div>
+    <button onclick="iniciarJuego()">▶ Iniciar juego</button>
+  </div>
+  
   <div id="vista-dados-host" class="oculto">
     <h1>Chaos Jeopardy — Tirada inicial</h1>
     <p>Los jugadores están tirando el dado para determinar el orden de turnos.</p>
