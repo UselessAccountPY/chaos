@@ -334,3 +334,24 @@ button:hover {
   min-width: 2rem;
   text-align: center;
 }
+
+.input-dado-manual {
+  background: #1a1a4a;
+  border: 2px solid #4444aa;
+  border-radius: 8px;
+  color: #aaaaff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.3rem 0.5rem;
+  text-align: center;
+  width: 70px;
+}
+
+.input-dado-manual:focus {
+  border-color: #8888ff;
+  outline: none;
+}
+
+.input-dado-manual::placeholder {
+  color: #444;
+}
