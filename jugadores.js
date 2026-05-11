@@ -44,7 +44,14 @@ function escucharRealtime() {
         document.getElementById("vista-espera").classList.add("oculto");
         document.getElementById("vista-dados-jugador").classList.remove("oculto");
         yaTire = false;
+      } else if (record.fase === "manual") {
+        // En asignación manual los jugadores solo esperan
+        document.getElementById("vista-espera").classList.remove("oculto");
+        document.getElementById("vista-dados-jugador").classList.add("oculto");
+        document.querySelector("#espera-box .subtitulo").textContent =
+          "El host está asignando los turnos...";
       } else if (record.fase === "juego") {
+        document.getElementById("vista-espera").classList.add("oculto");
         document.getElementById("vista-dados-jugador").classList.add("oculto");
         document.getElementById("vista-juego").classList.remove("oculto");
         document.getElementById("bienvenida").textContent = "¡Hola, " + miNombre + "!";
