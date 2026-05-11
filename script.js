@@ -884,8 +884,6 @@ function escucharJugadoresNuevos() {
     .subscribe();
 }
 
-// Llamala al final del archivo
-escucharJugadoresNuevos();
 
 // Al cargar, verificar fase
 window.addEventListener("load", async function() {
