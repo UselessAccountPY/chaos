@@ -38,7 +38,7 @@ function escucharRealtime() {
   sb.channel("fase_jugador")
   .on("postgres_changes",
     { event: "*", schema: "public", table: "estado_juego" },
-    function(payload) {
+    async function(payload) {
       const record = payload.new;
       if (record.fase === "dados") {
         document.getElementById("vista-espera").classList.add("oculto");
