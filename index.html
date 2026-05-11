@@ -34,12 +34,23 @@
   </div>
   
   <div id="vista-juego-host" class="oculto">
-    <!-- todo el contenido actual del host va acá -->
+
+    <!-- Panel de control arriba -->
+    <div id="panel-control">
+      <div id="panel-control-header">
+        <span id="contador-ronda">Ronda 1</span>
+        <button onclick="siguienteTurno()">⏭ Siguiente turno</button>
+      </div>
+      <div id="panel-control-lista"></div>
+    </div>
+  
+    <!-- Categorías y preguntas abajo -->
     <button onclick="resetJuego()">🗑 Reset jugadores</button>
     <div id="category-buttons"></div>
     <div id="question-list"></div>
+  
   </div>
   
-    <script src="script.js"></script>
+  <script src="script.js"></script>
   </body>
   </html>
