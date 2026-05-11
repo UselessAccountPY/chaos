@@ -55,6 +55,7 @@ function escucharRealtime() {
         document.getElementById("vista-dados-jugador").classList.add("oculto");
         document.getElementById("vista-juego").classList.remove("oculto");
         document.getElementById("bienvenida").textContent = "¡Hola, " + miNombre + "!";
+        await verificarTurnoInicial(); // ← agregá esta línea
       }
     }
   )
@@ -100,6 +101,18 @@ function escucharRealtime() {
       }
     )
     .subscribe();
+
+  sb.channel("turno_activo_jugador_" + miNombre)
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "estado_juego" },
+      async function(payload) {
+        const record = payload.new;
+        if (record.fase !== "juego") return;
+        await verificarMiTurno(record.turno_activo);
+      }
+    )
+    .subscribe();
+    
 }
 
 function mostrarPreguntaJugador(estado) {
@@ -193,4 +206,31 @@ async function tirarDado() {
   btn.onclick = null;
 
   resultado_div.textContent = "Obtuviste " + resultado;
+}
+
+async function verificarMiTurno(turnoActivo) {
+  const turnos = await dbLeerTurnos();
+  const miTurno = turnos.find(t => t.nombre === miNombre);
+  if (!miTurno) return;
+
+  const bienvenida = document.getElementById("bienvenida");
+  const esMiTurno = Number(miTurno.turno) === Number(turnoActivo);
+
+  if (esMiTurno) {
+    bienvenida.textContent = "¡Es tu turno, " + miNombre + "!";
+    bienvenida.style.color = "#4caf82";
+    bienvenida.style.fontSize = "1.6rem";
+  } else {
+    bienvenida.textContent = "¡Hola, " + miNombre + "!";
+    bienvenida.style.color = "";
+    bienvenida.style.fontSize = "";
+  }
+}
+
+// También verificar al entrar al juego
+async function verificarTurnoInicial() {
+  const estado = await dbLeerEstado();
+  if (estado && estado.fase === "juego") {
+    await verificarMiTurno(estado.turno_activo);
+  }
 }
