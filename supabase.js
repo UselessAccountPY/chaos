@@ -142,3 +142,8 @@ async function dbCrearTurno(nombre) {
 async function dbResetTurnos() {
   await sb.from("turnos").delete().neq("id", 0);
 }
+
+async function dbSetDadoManual(nombre, resultado) {
+  // Reutiliza la misma lógica de recálculo de turnos
+  await dbGuardarResultadoDado(nombre, resultado);
+}
