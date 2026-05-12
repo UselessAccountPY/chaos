@@ -63,6 +63,15 @@ function aplicarEstado(estado) {
     return;
   }
 
+
+  document.getElementById("vista-ruleta").classList.add("oculto");
+
+  // ... después del bloque de dados/manual:
+  if (estado.fase === "juego" && estado.fase_dado && estado.fase_dado !== "") {
+    manejarRuleta(estado);
+  }
+
+  
   // Fase juego — mostrar barra de turnos
   document.getElementById("barra-turnos").classList.remove("oculto");
 
@@ -206,6 +215,120 @@ sb.channel("turnos_pantalla")
       const estado = await dbLeerEstado();
       if (estado && (estado.fase === "dados" || estado.fase === "manual")) {
         await actualizarDadosPantalla();
+      }
+    }
+  )
+  .subscribe();
+
+
+function construirRuletaSVG() {
+  const categorias = [
+    { nombre: "1", color: "#e74c3c" },
+    { nombre: "2", color: "#e67e22" },
+    { nombre: "3", color: "#f1c40f" },
+    { nombre: "4", color: "#2ecc71" },
+    { nombre: "5", color: "#1abc9c" },
+    { nombre: "6", color: "#3498db" },
+    { nombre: "7", color: "#9b59b6" },
+    { nombre: "8", color: "#e91e8c" }
+  ];
+
+  const cx = 200, cy = 200, r = 180;
+  const total = categorias.length;
+  const angulo = (2 * Math.PI) / total;
+
+  let paths = "";
+  let textos = "";
+
+  categorias.forEach(function(cat, i) {
+    const inicio = i * angulo - Math.PI / 2;
+    const fin = inicio + angulo;
+    const x1 = cx + r * Math.cos(inicio);
+    const y1 = cy + r * Math.sin(inicio);
+    const x2 = cx + r * Math.cos(fin);
+    const y2 = cy + r * Math.sin(fin);
+    const midAngle = inicio + angulo / 2;
+    const tx = cx + (r * 0.65) * Math.cos(midAngle);
+    const ty = cy + (r * 0.65) * Math.sin(midAngle);
+
+    paths += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z"
+      fill="${cat.color}" stroke="#0a0a0a" stroke-width="2" opacity="0.85"/>`;
+    textos += `<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle"
+      fill="#fff" font-size="13" font-weight="bold"
+      transform="rotate(${(midAngle * 180 / Math.PI)}, ${tx}, ${ty})">${cat.nombre}</text>`;
+  });
+
+  return `<svg width="400" height="400" viewBox="0 0 400 400">
+    <circle cx="200" cy="200" r="182" fill="none" stroke="#333" stroke-width="3"/>
+    ${paths}
+    ${textos}
+    <circle cx="200" cy="200" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/>
+  </svg>`;
+}
+
+let ruletaRotacion = 0;
+
+async function manejarRuleta(estado) {
+  if (!estado.fase_dado || estado.fase_dado === "") {
+    document.getElementById("vista-ruleta").classList.add("oculto");
+    return;
+  }
+
+  document.getElementById("vista-ruleta").classList.remove("oculto");
+  document.getElementById("vista-default").classList.add("oculto");
+  document.getElementById("vista-pregunta").classList.add("oculto");
+
+  // Construir SVG si no existe
+  const svgContenedor = document.getElementById("ruleta-svg-contenedor");
+  if (!svgContenedor.innerHTML) {
+    svgContenedor.innerHTML = construirRuletaSVG();
+  }
+
+  if (estado.fase_dado === "categoria" && Number(estado.dado_categoria) === 0) {
+    // Esperando tirada — ruleta idle
+    document.getElementById("ruleta-resultado-box").classList.add("oculto");
+    document.getElementById("ruleta-dado12-box").classList.add("oculto");
+
+  } else if (Number(estado.dado_categoria) > 0) {
+    // Animar ruleta hasta la categoría
+    const catIndex = Number(estado.dado_categoria) - 1;
+    const totalCats = 8;
+    const anguloPorSeccion = 360 / totalCats;
+    // La categoría ganadora debe quedar arriba (270° = arriba en SVG)
+    const anguloDestino = 360 * 5 + (270 - catIndex * anguloPorSeccion);
+
+    const svg = svgContenedor.querySelector("svg");
+    if (svg) {
+      svg.style.transition = "transform 2s cubic-bezier(0.17, 0.67, 0.12, 1)";
+      svg.style.transform = `rotate(${anguloDestino}deg)`;
+      svg.style.transformOrigin = "center";
+      ruletaRotacion = anguloDestino;
+    }
+
+    // Mostrar nombre de categoría
+    setTimeout(async function() {
+      const turnos = await dbLeerTurnos();
+      document.getElementById("ruleta-categoria-nombre").textContent =
+        "Categoría " + estado.dado_categoria;
+      document.getElementById("ruleta-resultado-box").classList.remove("oculto");
+    }, 2200);
+
+    // Si también hay resultado de pregunta
+    if (Number(estado.dado_pregunta) > 0) {
+      document.getElementById("ruleta-dado12-valor").textContent = estado.dado_pregunta;
+      document.getElementById("ruleta-dado12-box").classList.remove("oculto");
+    }
+  }
+}
+
+// Escuchar cambios de dados en pantalla
+sb.channel("dados_pantalla")
+  .on("postgres_changes",
+    { event: "*", schema: "public", table: "estado_juego" },
+    async function(payload) {
+      const record = payload.new;
+      if (record.fase === "juego") {
+        await manejarRuleta(record);
       }
     }
   )
