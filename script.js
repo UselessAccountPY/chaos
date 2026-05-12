@@ -525,6 +525,9 @@ function actualizarConsolaHost(mensaje) {
 // ---- NAVEGACIÓN ---- //
 async function loadCategory(index) {
   await dbSetEstado("", "", "", false);
+  // Limpiar fase_dado al navegar a una categoría
+  await dbSetDados(0, 0, "");
+  ultimaFaseDado = "";
 
   const category = categories[index];
   const container = document.getElementById("question-list");
