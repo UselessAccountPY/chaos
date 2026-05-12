@@ -318,18 +318,20 @@ async function tirarDadoPregunta() {
 
 async function recibirResultadoDadoJugador(tipo, valor) {
   const estado = await dbLeerEstado();
+
   if (tipo === "categoria") {
     await dbSetDados(valor, 0, "pregunta");
-  } else {
+    // No ocultar acá — el listener detecta fase_dado="pregunta" y muestra el dado de pregunta
+  } else if (tipo === "pregunta") {
     await dbSetDados(estado.dado_categoria, valor, "resultado");
+    // Ocultar solo cuando es resultado final
+    setTimeout(function() {
+      const btn = document.getElementById("btn-dado-jugador");
+      if (btn) {
+        btn.classList.remove("dado-apretado", "dado-girando");
+        btn.textContent = "⬡";
+      }
+      ocultarDadosJugador();
+    }, 1500);
   }
-  // Resetear botón después de un momento
-  setTimeout(function() {
-    const btn = document.getElementById("btn-dado-jugador");
-    if (btn) {
-      btn.classList.remove("dado-apretado", "dado-girando");
-      btn.textContent = "⬡";
-    }
-    ocultarDadosJugador();
-  }, 1500);
 }
