@@ -234,3 +234,95 @@ async function verificarTurnoInicial() {
     await verificarMiTurno(estado.turno_activo);
   }
 }
+
+async function escucharDados() {
+  sb.channel("dados_jugador_" + miNombre)
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "estado_juego" },
+      async function(payload) {
+        const record = payload.new;
+        const estado = await dbLeerEstado();
+        const turnos = await dbLeerTurnos();
+        const turnoActivo = Number(estado?.turno_activo) || 1;
+        const miTurnoData = turnos.find(t => t.nombre === miNombre);
+        const esMiTurno = miTurnoData && Number(miTurnoData.turno) === turnoActivo;
+
+        if (!esMiTurno) {
+          ocultarDadosJugador();
+          return;
+        }
+
+        if (record.fase_dado === "categoria" && Number(record.dado_categoria) === 0) {
+          mostrarDadoJugador("categoria");
+        } else if (record.fase_dado === "pregunta" && Number(record.dado_pregunta) === 0) {
+          mostrarDadoJugador("pregunta");
+        } else {
+          ocultarDadosJugador();
+        }
+      }
+    )
+    .subscribe();
+}
+
+function mostrarDadoJugador(tipo) {
+  const contenedor = document.getElementById("dado-jugador-contenedor");
+  const label = document.getElementById("dado-jugador-label");
+  if (!contenedor || !label) return;
+
+  contenedor.classList.remove("oculto");
+
+  if (tipo === "categoria") {
+    label.textContent = "Presioná para seleccionar categoría";
+    document.getElementById("btn-dado-jugador").onclick = tirarDadoCategoria;
+  } else {
+    label.textContent = "Presioná para seleccionar pregunta";
+    document.getElementById("btn-dado-jugador").onclick = tirarDadoPregunta;
+  }
+}
+
+function ocultarDadosJugador() {
+  const contenedor = document.getElementById("dado-jugador-contenedor");
+  if (contenedor) contenedor.classList.add("oculto");
+}
+
+async function tirarDadoCategoria() {
+  const btn = document.getElementById("btn-dado-jugador");
+  btn.classList.add("dado-girando");
+  btn.onclick = null;
+  await new Promise(r => setTimeout(r, 1000));
+  const resultado = Math.floor(Math.random() * 8) + 1; // dado de 8
+  btn.classList.remove("dado-girando");
+  btn.textContent = resultado;
+  btn.classList.add("dado-apretado");
+  await recibirResultadoDadoJugador("categoria", resultado);
+}
+
+async function tirarDadoPregunta() {
+  const btn = document.getElementById("btn-dado-jugador");
+  btn.classList.add("dado-girando");
+  btn.onclick = null;
+  await new Promise(r => setTimeout(r, 1000));
+  const resultado = Math.floor(Math.random() * 12) + 1; // dado de 12
+  btn.classList.remove("dado-girando");
+  btn.textContent = resultado;
+  btn.classList.add("dado-apretado");
+  await recibirResultadoDadoJugador("pregunta", resultado);
+}
+
+async function recibirResultadoDadoJugador(tipo, valor) {
+  const estado = await dbLeerEstado();
+  if (tipo === "categoria") {
+    await dbSetDados(valor, 0, "pregunta");
+  } else {
+    await dbSetDados(estado.dado_categoria, valor, "resultado");
+  }
+  // Resetear botón después de un momento
+  setTimeout(function() {
+    const btn = document.getElementById("btn-dado-jugador");
+    if (btn) {
+      btn.classList.remove("dado-apretado", "dado-girando");
+      btn.textContent = "⬡";
+    }
+    ocultarDadosJugador();
+  }, 1500);
+}
