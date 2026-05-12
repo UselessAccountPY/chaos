@@ -851,12 +851,12 @@ async function resetJuego() {
   const confirmar = confirm("¿Seguro? Esto resetea absolutamente todo el juego.");
   if (!confirmar) return;
 
-  // Limpiar todas las tablas
   await dbResetJugadores();
   await dbResetTurnos();
+  await dbBuzzerReset();
 
-  // Resetear estado completo
-  await sb.from("estado_juego").update({
+  // Reset explícito fila por fila para asegurar que Supabase lo recibe
+  const { error } = await sb.from("estado_juego").update({
     categoria: "",
     nombre: "",
     descripcion: "",
@@ -873,18 +873,21 @@ async function resetJuego() {
     fase_dado: ""
   }).eq("id", 1);
 
+  if (error) {
+    console.error("Error en reset:", error);
+    alert("Error al resetear: " + error.message);
+    return;
+  }
+
   // Limpiar consola visual
   const consola = document.getElementById("consola-dados");
   if (consola) consola.innerHTML = "";
 
   // Limpiar preguntas respondidas en memoria
   categories.forEach(function(cat) {
-    cat.questions.forEach(function(q) {
-      q.answered = false;
-    });
+    cat.questions.forEach(function(q) { q.answered = false; });
   });
 
-  // Volver al lobby
   mostrarLobbyHost();
 }
 
