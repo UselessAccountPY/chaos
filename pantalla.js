@@ -41,9 +41,11 @@ function escucharCambios() {
     .subscribe();
 }
 
+
 function aplicarEstado(estado) {
   if (!estado) return;
 
+  // Ocultar vistas principales (no overlays)
   document.getElementById("vista-lobby").classList.add("oculto");
   document.getElementById("vista-default").classList.add("oculto");
   document.getElementById("vista-pregunta").classList.add("oculto");
@@ -63,23 +65,21 @@ function aplicarEstado(estado) {
     return;
   }
 
+  if (estado.fase === "juego") {
+    // Barra de turnos siempre visible en juego
+    document.getElementById("barra-turnos").classList.remove("oculto");
 
-  document.getElementById("vista-ruleta").classList.add("oculto");
-
-  // ... después del bloque de dados/manual:
-  if (estado.fase === "juego" && estado.fase_dado && estado.fase_dado !== "") {
+    // Manejar overlay de ruleta por separado (no toca las vistas principales)
     manejarRuleta(estado);
-  }
 
-  
-  // Fase juego — mostrar barra de turnos
-  document.getElementById("barra-turnos").classList.remove("oculto");
+    if (!estado.activa) {
+      // Sin pregunta activa — mostrar logo
+      document.getElementById("vista-default").classList.remove("oculto");
+      return;
+    }
 
-  if (!estado.activa) {
-    mostrarDefault();
-    return;
+    mostrarPregunta(estado);
   }
-  mostrarPregunta(estado);
 }
 
 async function actualizarBarraTurnos(estado) {
