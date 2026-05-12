@@ -1159,7 +1159,7 @@ async function renderizarPanelControl() {
           </div>
         </div>
 
-        <button class="btn-dado-panel" title="Dar dado (próximamente)">🎲</button>
+        <button class="btn-dado-panel" onclick="darDadosJugador()" title="Dar dados">🎲</button>
 
       </div>
     `;
@@ -1193,3 +1193,67 @@ async function toggleMostrarPuntajes() {
     btn.textContent = !actual ? "🏆 Ocultar puntajes" : "🏆 Mostrar puntajes";
   }
 }
+
+async function darDadosJugador() {
+  const estado = await dbLeerEstado();
+  const turnoActivo = Number(estado?.turno_activo) || 1;
+  const turnos = await dbLeerTurnos();
+  const jugadorActivo = turnos.find(t => Number(t.turno) === turnoActivo);
+  if (!jugadorActivo) return;
+
+  // Resetear dados y activar fase categoria
+  await dbSetDados(0, 0, "categoria");
+  actualizarConsolaHost("🎲 Dados entregados a " + jugadorActivo.nombre);
+}
+
+
+async function recibirResultadoDado(tipo, valor) {
+  const estado = await dbLeerEstado();
+
+  if (tipo === "categoria") {
+    // Guardar categoría y pasar a fase pregunta
+    await dbSetDados(valor, 0, "pregunta");
+    const nombreCategoria = categories[valor - 1]?.name || "Categoría " + valor;
+    actualizarConsolaHost("📌 Categoría seleccionada: " + nombreCategoria + " (" + valor + ")");
+
+  } else if (tipo === "pregunta") {
+    // Guardar pregunta
+    await dbSetDados(estado.dado_categoria, valor, "resultado");
+    const nombreCategoria = categories[estado.dado_categoria - 1]?.name || "Cat. " + estado.dado_categoria;
+    actualizarConsolaHost("📋 Pregunta seleccionada: " + valor + " — " + nombreCategoria);
+  }
+}
+
+
+function actualizarConsolaHost(mensaje) {
+  const consola = document.getElementById("consola-dados");
+  if (!consola) return;
+  const linea = document.createElement("div");
+  linea.className = "consola-linea";
+  linea.textContent = mensaje;
+  consola.appendChild(linea);
+  consola.scrollTop = consola.scrollHeight;
+}
+
+
+// Escuchar cambios en estado para actualizar consola
+sb.channel("dados_host")
+  .on("postgres_changes",
+    { event: "*", schema: "public", table: "estado_juego" },
+    async function(payload) {
+      const record = payload.new;
+      if (!record.fase_dado) return;
+
+      if (record.fase_dado === "categoria" && Number(record.dado_categoria) === 0) {
+        actualizarConsolaHost("⏳ Esperando tirada de categoría...");
+      }
+      if (record.fase_dado === "pregunta" && Number(record.dado_pregunta) === 0) {
+        actualizarConsolaHost("⏳ Esperando tirada de pregunta...");
+      }
+      if (record.fase_dado === "resultado") {
+        const cat = categories[Number(record.dado_categoria) - 1]?.name || "Cat. " + record.dado_categoria;
+        actualizarConsolaHost("✅ Resultado final — " + cat + " / Pregunta " + record.dado_pregunta);
+      }
+    }
+  )
+  .subscribe();
