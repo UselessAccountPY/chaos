@@ -848,14 +848,44 @@ function mostrarFeedback(nombre, puntos) {
 
 
 async function resetJuego() {
-  const confirmar = confirm("¿Seguro? Esto borra todos los jugadores, puntajes y turnos.");
+  const confirmar = confirm("¿Seguro? Esto resetea absolutamente todo el juego.");
   if (!confirmar) return;
+
+  // Limpiar todas las tablas
   await dbResetJugadores();
   await dbResetTurnos();
-  await dbSetEstado("", "", "", false);
-  await dbSetFase("lobby");
+
+  // Resetear estado completo
+  await sb.from("estado_juego").update({
+    categoria: "",
+    nombre: "",
+    descripcion: "",
+    activa: false,
+    modo: "normal",
+    puntaje_activo: 0,
+    buzzer_activo: false,
+    fase: "lobby",
+    turno_activo: 1,
+    ronda: 1,
+    mostrar_puntajes: false,
+    dado_categoria: 0,
+    dado_pregunta: 0,
+    fase_dado: ""
+  }).eq("id", 1);
+
+  // Limpiar consola visual
+  const consola = document.getElementById("consola-dados");
+  if (consola) consola.innerHTML = "";
+
+  // Limpiar preguntas respondidas en memoria
+  categories.forEach(function(cat) {
+    cat.questions.forEach(function(q) {
+      q.answered = false;
+    });
+  });
+
+  // Volver al lobby
   mostrarLobbyHost();
-  alert("Reset hecho.");
 }
 
 let canalJugadores = null; // ← agregá esta variable al inicio del archivo
