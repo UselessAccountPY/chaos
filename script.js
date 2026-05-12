@@ -506,7 +506,21 @@ const categories = [
 }
 ];
 
+let ultimoMensajeConsola = ""; // ← agregá al inicio de script.js
 
+function actualizarConsolaHost(mensaje) {
+  // Evitar duplicados consecutivos
+  if (mensaje === ultimoMensajeConsola) return;
+  ultimoMensajeConsola = mensaje;
+
+  const consola = document.getElementById("consola-dados");
+  if (!consola) return;
+  const linea = document.createElement("div");
+  linea.className = "consola-linea";
+  linea.textContent = mensaje;
+  consola.appendChild(linea);
+  consola.scrollTop = consola.scrollHeight;
+}
 
 // ---- NAVEGACIÓN ---- //
 async function loadCategory(index) {
