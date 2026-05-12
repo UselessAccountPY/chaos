@@ -25,7 +25,7 @@ if (estado.fase === "lobby") {
   document.getElementById("vista-dados-jugador").classList.remove("oculto");
 } else if (estado.fase === "juego") {
   document.getElementById("vista-juego").classList.remove("oculto");
-  document.getElementById("bienvenida").textContent = "¡Hola, " + nombre + "!";
+  document.getElementById("bienvenida").textContent = nombre;
   document.getElementById("mi-puntaje").textContent = existe ? existe.puntaje : 0;
   if (estado.activa) mostrarPreguntaJugador(estado);
 }
@@ -54,7 +54,7 @@ async function escucharRealtime() {
         document.getElementById("vista-espera").classList.add("oculto");
         document.getElementById("vista-dados-jugador").classList.add("oculto");
         document.getElementById("vista-juego").classList.remove("oculto");
-        document.getElementById("bienvenida").textContent = "¡Hola, " + miNombre + "!";
+        document.getElementById("bienvenida").textContent = miNombre;
         await verificarTurnoInicial(); // ← agregá esta línea
       }
     }
@@ -217,11 +217,11 @@ async function verificarMiTurno(turnoActivo) {
   const esMiTurno = Number(miTurno.turno) === Number(turnoActivo);
 
   if (esMiTurno) {
-    bienvenida.textContent = "¡Es tu turno, " + miNombre + "!";
+    bienvenida.textContent = miNombre;
     bienvenida.style.color = "#4caf82";
     bienvenida.style.fontSize = "1.6rem";
   } else {
-    bienvenida.textContent = "¡Hola, " + miNombre + "!";
+    bienvenida.textContent = miNombre;
     bienvenida.style.color = "";
     bienvenida.style.fontSize = "";
   }
