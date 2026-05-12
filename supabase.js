@@ -179,3 +179,9 @@ async function dbTogglePuntajes(mostrar) {
     .update({ mostrar_puntajes: mostrar })
     .eq("id", 1);
 }
+
+async function dbSetDados(dadoCategoria, dadoPregunta, faseDado) {
+  await sb.from("estado_juego")
+    .update({ dado_categoria: dadoCategoria, dado_pregunta: dadoPregunta, fase_dado: faseDado })
+    .eq("id", 1);
+}
