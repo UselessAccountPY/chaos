@@ -236,14 +236,20 @@ async function verificarTurnoInicial() {
 }
 
 async function escucharDados() {
-  sb.channel("dados_jugador_" + miNombre)
+  sb.channel("dados_jugador")
     .on("postgres_changes",
       { event: "*", schema: "public", table: "estado_juego" },
       async function(payload) {
         const record = payload.new;
-        const estado = await dbLeerEstado();
+        if (record.fase !== "juego") return;
+        if (!record.fase_dado || record.fase_dado === "") {
+          ocultarDadosJugador();
+          return;
+        }
+
+        // Verificar si es mi turno
         const turnos = await dbLeerTurnos();
-        const turnoActivo = Number(estado?.turno_activo) || 1;
+        const turnoActivo = Number(record.turno_activo) || 1;
         const miTurnoData = turnos.find(t => t.nombre === miNombre);
         const esMiTurno = miTurnoData && Number(miTurnoData.turno) === turnoActivo;
 
@@ -252,11 +258,12 @@ async function escucharDados() {
           return;
         }
 
+        // Mostrar el dado correcto según la fase
         if (record.fase_dado === "categoria" && Number(record.dado_categoria) === 0) {
           mostrarDadoJugador("categoria");
         } else if (record.fase_dado === "pregunta" && Number(record.dado_pregunta) === 0) {
           mostrarDadoJugador("pregunta");
-        } else {
+        } else if (record.fase_dado === "resultado") {
           ocultarDadosJugador();
         }
       }
