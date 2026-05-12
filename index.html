@@ -33,45 +33,48 @@
     <button onclick="iniciarJuego()">▶ Iniciar juego</button>
   </div>
   
-  <div id="vista-juego-host" class="oculto">
-    <div id="juego-layout">
-      <!-- Panel de control arriba -->
-      <div id="juego-col-izq">
-        <h1>Panel de Control</h1>
-        <div id="panel-control">
-          <div id="panel-control-header">
-            <span id="contador-ronda">Ronda 1</span>
-              <button id="btn-mostrar-puntajes" onclick="toggleMostrarPuntajes()">
-                🏆 Mostrar puntajes
-              </button>
+ <div id="vista-juego-host" class="oculto">
+
+  <div id="juego-layout">
+
+    <!-- Columna izquierda: panel control + categorias -->
+    <div id="juego-col-izq">
+      <div id="panel-control">
+        <div id="panel-control-header">
+          <span id="contador-ronda">Ronda 1</span>
+          <div style="display:flex; gap:0.5rem;">
+            <button id="btn-mostrar-puntajes" onclick="toggleMostrarPuntajes()">
+              🏆 Mostrar puntajes
+            </button>
             <button onclick="siguienteTurno()">⏭ Siguiente turno</button>
-            <button onclick="resetJuego()">🗑 Reset jugadores</button>
           </div>
         </div>
-      </div>
         <div id="panel-control-lista"></div>
-        <div id="juego-col-der">
-        <div id="consola-panel">
-          <div id="consola-header">
-            <span>🎲 Consola de dados</span>
-            <button onclick="limpiarConsola()">🗑</button>
-          </div>
-          <div id="consola-dados"></div>
-          <div id="consola-acciones">
-            <p id="consola-estado-label">—</p>
-            <div id="consola-botones-resultado"></div>
-          </div>
+      </div>
+
+      <button onclick="resetJuego()">🗑 Reset jugadores</button>
+      <div id="category-buttons"></div>
+      <div id="question-list"></div>
+    </div>
+
+    <!-- Columna derecha: consola de dados -->
+    <div id="juego-col-der">
+      <div id="consola-panel">
+        <div id="consola-header">
+          <span>🎲 Consola de dados</span>
+          <button onclick="limpiarConsola()">🗑</button>
+        </div>
+        <div id="consola-dados"></div>
+        <div id="consola-acciones">
+          <p id="consola-estado-label">—</p>
+          <div id="consola-botones-resultado"></div>
         </div>
       </div>
     </div>
-    
-  
-    <!-- Categorías y preguntas abajo -->
-    <h1>Selección de categoría</h1>
-    <div id="category-buttons"></div>
-    <div id="question-list"></div>
-  
+
   </div>
+
+</div>
   
   <script src="script.js"></script>
   </body>
