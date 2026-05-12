@@ -390,3 +390,70 @@ body {
   font-size: 1.3rem;
   font-weight: bold;
 }
+
+#vista-ruleta {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  width: 100vw;
+}
+
+#ruleta-contenido {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+#ruleta-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#ruleta-indicador {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: -0.5rem;
+  z-index: 2;
+}
+
+#ruleta-svg-contenedor svg {
+  filter: drop-shadow(0 0 20px rgba(100,100,255,0.3));
+}
+
+#ruleta-resultado-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+#ruleta-categoria-nombre {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+#ruleta-dado12-box {
+  background: #1a1a4a;
+  border: 3px solid #4444aa;
+  border-radius: 16px;
+  padding: 1.5rem 2.5rem;
+  text-align: center;
+}
+
+#ruleta-dado12-valor {
+  color: #aaaaff;
+  font-size: 4rem;
+  font-weight: bold;
+  display: block;
+}
+
+#ruleta-dado12-box p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
