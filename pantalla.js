@@ -269,14 +269,16 @@ function construirRuletaSVG() {
 let ruletaRotacion = 0;
 
 async function manejarRuleta(estado) {
+  const overlay = document.getElementById("overlay-ruleta");
+
+  // Ocultar ruleta si no hay fase_dado activa o ya se eligió categoria y pregunta
   if (!estado.fase_dado || estado.fase_dado === "") {
-    document.getElementById("vista-ruleta").classList.add("oculto");
+    overlay.classList.add("oculto");
     return;
   }
 
-  document.getElementById("vista-ruleta").classList.remove("oculto");
-  document.getElementById("vista-default").classList.add("oculto");
-  document.getElementById("vista-pregunta").classList.add("oculto");
+  // Mostrar overlay
+  overlay.classList.remove("oculto");
 
   // Construir SVG si no existe
   const svgContenedor = document.getElementById("ruleta-svg-contenedor");
@@ -285,39 +287,41 @@ async function manejarRuleta(estado) {
   }
 
   if (estado.fase_dado === "categoria" && Number(estado.dado_categoria) === 0) {
-    // Esperando tirada — ruleta idle
+    // Esperando tirada de categoría
     document.getElementById("ruleta-resultado-box").classList.add("oculto");
     document.getElementById("ruleta-dado12-box").classList.add("oculto");
 
   } else if (Number(estado.dado_categoria) > 0) {
-    // Animar ruleta hasta la categoría
+    // Animar ruleta
     const catIndex = Number(estado.dado_categoria) - 1;
-    const totalCats = 8;
-    const anguloPorSeccion = 360 / totalCats;
-    // La categoría ganadora debe quedar arriba (270° = arriba en SVG)
+    const anguloPorSeccion = 360 / 8;
     const anguloDestino = 360 * 5 + (270 - catIndex * anguloPorSeccion);
-
     const svg = svgContenedor.querySelector("svg");
     if (svg) {
       svg.style.transition = "transform 2s cubic-bezier(0.17, 0.67, 0.12, 1)";
       svg.style.transform = `rotate(${anguloDestino}deg)`;
       svg.style.transformOrigin = "center";
-      ruletaRotacion = anguloDestino;
     }
 
-    // Mostrar nombre de categoría
-    setTimeout(async function() {
-      const turnos = await dbLeerTurnos();
+    setTimeout(function() {
       document.getElementById("ruleta-categoria-nombre").textContent =
         "Categoría " + estado.dado_categoria;
       document.getElementById("ruleta-resultado-box").classList.remove("oculto");
     }, 2200);
 
-    // Si también hay resultado de pregunta
+    // Mostrar resultado de pregunta si ya está
     if (Number(estado.dado_pregunta) > 0) {
-      document.getElementById("ruleta-dado12-valor").textContent = estado.dado_pregunta;
-      document.getElementById("ruleta-dado12-box").classList.remove("oculto");
+      setTimeout(function() {
+        document.getElementById("ruleta-dado12-valor").textContent = estado.dado_pregunta;
+        document.getElementById("ruleta-dado12-box").classList.remove("oculto");
+      }, 2500);
     }
+  }
+
+  // Ocultar overlay cuando el host seleccionó categoria en index.html
+  // Esto se dispara cuando fase_dado pasa a "" al hacer loadCategory
+  if (estado.fase_dado === "") {
+    overlay.classList.add("oculto");
   }
 }
 
