@@ -1284,6 +1284,8 @@ function actualizarConsolaHost(mensaje) {
 
 
 // Escuchar cambios en estado para actualizar consola
+let ultimaFaseDado = "";
+
 sb.channel("dados_host")
   .on("postgres_changes",
     { event: "*", schema: "public", table: "estado_juego" },
@@ -1291,13 +1293,16 @@ sb.channel("dados_host")
       const record = payload.new;
       if (!record.fase_dado) return;
 
+      // Solo actuar si la fase_dado cambió
+      const claveCambio = record.fase_dado + "_" + record.dado_categoria + "_" + record.dado_pregunta;
+      if (claveCambio === ultimaFaseDado) return;
+      ultimaFaseDado = claveCambio;
+
       if (record.fase_dado === "categoria" && Number(record.dado_categoria) === 0) {
         actualizarConsolaHost("⏳ Esperando tirada de categoría...");
-      }
-      if (record.fase_dado === "pregunta" && Number(record.dado_pregunta) === 0) {
+      } else if (record.fase_dado === "pregunta" && Number(record.dado_pregunta) === 0) {
         actualizarConsolaHost("⏳ Esperando tirada de pregunta...");
-      }
-      if (record.fase_dado === "resultado") {
+      } else if (record.fase_dado === "resultado") {
         const cat = categories[Number(record.dado_categoria) - 1]?.name || "Cat. " + record.dado_categoria;
         actualizarConsolaHost("✅ Resultado final — " + cat + " / Pregunta " + record.dado_pregunta);
       }
