@@ -112,7 +112,7 @@ async function escucharRealtime() {
       }
     )
     .subscribe();
-    
+escucharDados();    
 }
 
 function mostrarPreguntaJugador(estado) {
