@@ -1211,33 +1211,30 @@ async function renderizarPanelControl() {
           </div>
         </div>
         
-        <div class="panel-pu-control">
-          <span class="panel-pu-item pu-color-saltar"
-            title="Saltar turno">
-            ⏭
-            <input type="number" min="0" max="9"
-              class="input-pu-panel"
-              value="${j.pu_saltar || 0}"
-              onchange="editarPU('${t.nombre}', 'saltar', this.value)"/>
-          </span>
-          <span class="panel-pu-item pu-color-amigo"
-            title="Llamar a un amigo">
-            📞
-            <input type="number" min="0" max="9"
-              class="input-pu-panel"
-              value="${j.pu_amigo || 0}"
-              onchange="editarPU('${t.nombre}', 'amigo', this.value)"/>
-          </span>
-          <span class="panel-pu-item pu-color-twist"
-            title="Twist">
-            🌀
-            <input type="number" min="0" max="9"
-              class="input-pu-panel"
-              value="${j.pu_twist || 0}"
-              onchange="editarPU('${t.nombre}', 'twist', this.value)"/>
-          </span>
-        </div>
-        <button class="btn-dado-panel" onclick="darDadosJugador()" title="Dar dados">🎲</button>
+       <div class="panel-pu-control">
+        <span class="panel-pu-item pu-color-saltar" title="Saltar turno">
+          ⏭
+          <input type="number" min="0" max="9"
+            class="input-pu-panel"
+            value="${jugador.pu_saltar || 0}"
+            onchange="editarPU('${t.nombre}', 'saltar', this.value)"/>
+        </span>
+        <span class="panel-pu-item pu-color-amigo" title="Llamar a un amigo">
+          📞
+          <input type="number" min="0" max="9"
+            class="input-pu-panel"
+            value="${jugador.pu_amigo || 0}"
+            onchange="editarPU('${t.nombre}', 'amigo', this.value)"/>
+        </span>
+        <span class="panel-pu-item pu-color-twist" title="Twist">
+          🌀
+          <input type="number" min="0" max="9"
+            class="input-pu-panel"
+            value="${jugador.pu_twist || 0}"
+            onchange="editarPU('${t.nombre}', 'twist', this.value)"/>
+        </span>
+      </div>
+      <button class="btn-dado-panel" onclick="darDadosJugador()" title="Dar dados">🎲</button>
 
       </div>
     `;
