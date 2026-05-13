@@ -335,3 +335,100 @@ async function recibirResultadoDadoJugador(tipo, valor) {
     }, 1500);
   }
 }
+
+const POWERUP_INFO = {
+  saltar: {
+    nombre: "⏭ Saltar turno",
+    // ↓ EDITÁ ESTA DESCRIPCIÓN
+    descripcion: "Saltás tu turno sin consecuencias. La categoría y pregunta seleccionada pasan al siguiente jugador.",
+    color: "saltar"
+  },
+  amigo: {
+    nombre: "📞 Llamar a un amigo",
+    // ↓ EDITÁ ESTA DESCRIPCIÓN
+    descripcion: "Podés pedirle a otra persona fuera del juego que responda la pregunta por vos, incluso llamarle a alguien. Si no te contesta pierdes el turno.",
+    color: "amigo"
+  },
+  twist: {
+    nombre: "🌀 Twist",
+    // ↓ EDITÁ ESTA DESCRIPCIÓN
+    descripcion: "Caos. Modifica la pregunta sea para bien o para mal.",
+    color: "twist"
+  }
+};
+
+let puActivo = null; // power up actualmente abierto en el panel
+
+async function actualizarCantidadesPU() {
+  const jugadores = await dbLeerJugadores();
+  const yo = jugadores.find(j => j.nombre === miNombre);
+  if (!yo) return;
+
+  ["saltar", "amigo", "twist"].forEach(function(tipo) {
+    const campo = tipo === "saltar" ? "pu_saltar"
+      : tipo === "amigo" ? "pu_amigo" : "pu_twist";
+    const cantidad = Number(yo[campo]) || 0;
+
+    // Actualizar contador
+    const el = document.getElementById("pu-cantidad-" + tipo);
+    if (el) el.textContent = "x" + cantidad;
+
+    // Marcar como agotado si es 0
+    const btn = document.querySelector(".pu-" + tipo);
+    if (btn) {
+      if (cantidad === 0) btn.classList.add("agotado");
+      else btn.classList.remove("agotado");
+    }
+  });
+}
+
+async function abrirPowerUp(tipo) {
+  const jugadores = await dbLeerJugadores();
+  const yo = jugadores.find(j => j.nombre === miNombre);
+  const campo = tipo === "saltar" ? "pu_saltar"
+    : tipo === "amigo" ? "pu_amigo" : "pu_twist";
+
+  if (!yo || Number(yo[campo]) <= 0) return; // agotado
+
+  puActivo = tipo;
+  const info = POWERUP_INFO[tipo];
+  const estado = await dbLeerEstado();
+  const turnos = await dbLeerTurnos();
+  const turnoActivo = Number(estado?.turno_activo) || 1;
+  const miTurnoData = turnos.find(t => t.nombre === miNombre);
+  const esMiTurno = miTurnoData && Number(miTurnoData.turno) === turnoActivo;
+
+  // Rellenar panel
+  document.getElementById("panel-pu-titulo").textContent = info.nombre;
+  document.getElementById("panel-pu-descripcion").textContent = info.descripcion;
+
+  // Color del panel
+  const contenido = document.getElementById("panel-pu-contenido");
+  contenido.className = "color-" + info.color;
+
+  // Botón usar
+  const btnUsar = document.getElementById("btn-usar-pu");
+  btnUsar.className = "";
+  if (esMiTurno) {
+    btnUsar.textContent = "USAR POWER UP";
+    btnUsar.classList.add("pu-activo-" + tipo);
+    btnUsar.disabled = false;
+  } else {
+    btnUsar.textContent = "Solo puede usarse cuando sea tu turno";
+    btnUsar.classList.add("pu-desactivado");
+    btnUsar.disabled = true;
+  }
+
+  document.getElementById("panel-powerup").classList.remove("oculto");
+}
+
+function cerrarPowerUp() {
+  puActivo = null;
+  document.getElementById("panel-powerup").classList.add("oculto");
+}
+
+async function usarPowerUp() {
+  if (!puActivo || !miNombre) return;
+  await dbSolicitarPowerUp(miNombre, puActivo);
+  cerrarPowerUp();
+}
