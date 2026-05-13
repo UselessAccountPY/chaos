@@ -185,3 +185,55 @@ async function dbSetDados(dadoCategoria, dadoPregunta, faseDado) {
     .update({ dado_categoria: dadoCategoria, dado_pregunta: dadoPregunta, fase_dado: faseDado })
     .eq("id", 1);
 }
+
+async function dbSolicitarPowerUp(nombre, tipo) {
+  await sb.from("solicitudes_pu")
+    .insert({ nombre, tipo, estado: "pendiente" });
+}
+
+async function dbAceptarPowerUp(id, nombre, tipo) {
+  // Marcar solicitud como aceptada
+  await sb.from("solicitudes_pu")
+    .update({ estado: "aceptada" })
+    .eq("id", id);
+
+  // Descontar el power up del jugador
+  const jugadores = await dbLeerJugadores();
+  const jugador = jugadores.find(j => j.nombre === nombre);
+  if (!jugador) return;
+
+  const campo = tipo === "saltar" ? "pu_saltar"
+    : tipo === "amigo" ? "pu_amigo"
+    : "pu_twist";
+
+  await sb.from("jugadores")
+    .update({ [campo]: Math.max(0, jugador[campo] - 1) })
+    .eq("nombre", nombre);
+}
+
+async function dbRechazarPowerUp(id) {
+  await sb.from("solicitudes_pu")
+    .update({ estado: "rechazada" })
+    .eq("id", id);
+}
+
+async function dbLeerSolicitudesPendientes() {
+  const { data } = await sb.from("solicitudes_pu")
+    .select("*")
+    .eq("estado", "pendiente")
+    .order("id", { ascending: true });
+  return data || [];
+}
+
+async function dbActualizarPowerUp(nombre, tipo, cantidad) {
+  const campo = tipo === "saltar" ? "pu_saltar"
+    : tipo === "amigo" ? "pu_amigo"
+    : "pu_twist";
+  await sb.from("jugadores")
+    .update({ [campo]: cantidad })
+    .eq("nombre", nombre);
+}
+
+async function dbResetSolicitudes() {
+  await sb.from("solicitudes_pu").delete().neq("id", 0);
+}
