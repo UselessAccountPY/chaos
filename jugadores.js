@@ -30,8 +30,8 @@ if (estado.fase === "lobby") {
   if (estado.activa) mostrarPreguntaJugador(estado);
 }
 
+await actualizarCantidadesPU();
 escucharRealtime();
-actualizarCantidadesPU();
 }
 
 function escucharRealtime() {
@@ -91,15 +91,15 @@ function escucharRealtime() {
   sb.channel("jugadores_puntaje_" + Date.now())
     .on("postgres_changes",
       { event: "UPDATE", schema: "public", table: "jugadores" },
-      function(payload) {
+      async function(payload) {
         const record = payload.new;
         if (record.nombre === miNombre) {
           document.getElementById("mi-puntaje").textContent = record.puntaje;
-          actualizarCantidadesPU();
+          await actualizarCantidadesPU();
         }
       }
     )
-    .subscribe();
+  .subscribe();
 
   sb.channel("turno_activo_jugador_" + Date.now())
     .on("postgres_changes",
