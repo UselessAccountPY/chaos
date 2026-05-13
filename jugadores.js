@@ -31,6 +31,7 @@ if (estado.fase === "lobby") {
 }
 
 escucharRealtime();
+actualizarCantidadesPU();
 }
 
 async function escucharRealtime() {
@@ -112,6 +113,19 @@ async function escucharRealtime() {
       }
     )
     .subscribe();
+
+  sb.channel("jugadores_puntaje")
+  .on("postgres_changes",
+    { event: "UPDATE", schema: "public", table: "jugadores" },
+    function(payload) {
+      const record = payload.new;
+      if (record.nombre === miNombre) {
+        document.getElementById("mi-puntaje").textContent = record.puntaje;
+        actualizarCantidadesPU(); // ← agregá esta línea
+      }
+    }
+  )
+  .subscribe();
 escucharDados();    
 }
 
