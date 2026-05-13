@@ -34,76 +34,74 @@ escucharRealtime();
 actualizarCantidadesPU();
 }
 
-async function escucharRealtime() {
-  // Al inicio de escucharRealtime, antes de los canales existentes
-  sb.channel("fase_jugador")
-  .on("postgres_changes",
-    { event: "*", schema: "public", table: "estado_juego" },
-    async function(payload) {
-      const record = payload.new;
-      if (record.fase === "dados") {
-        document.getElementById("vista-espera").classList.add("oculto");
-        document.getElementById("vista-dados-jugador").classList.remove("oculto");
-        yaTire = false;
-      } else if (record.fase === "manual") {
-        // En asignación manual los jugadores solo esperan
-        document.getElementById("vista-espera").classList.remove("oculto");
-        document.getElementById("vista-dados-jugador").classList.add("oculto");
-        document.querySelector("#espera-box .subtitulo").textContent =
-          "El host está asignando los turnos...";
-      } else if (record.fase === "juego") {
-        document.getElementById("vista-espera").classList.add("oculto");
-        document.getElementById("vista-dados-jugador").classList.add("oculto");
-        document.getElementById("vista-juego").classList.remove("oculto");
-        document.getElementById("bienvenida").textContent = miNombre;
-        await verificarTurnoInicial(); // ← agregá esta línea
-      }
-    }
-  )
-  .subscribe();
-  // Escuchar cambios en estado del juego
-  sb.channel("estado_juego_jugador")
-  .on("postgres_changes",
-    { event: "*", schema: "public", table: "estado_juego" },
-    function(payload) {
-      const record = payload.new;
-      if (!record.activa) {
-        ocultarPreguntaJugador();
-        ocultarBuzzer();
-        yaBuzzee = false;
-        return;
-      }
-      if (record.modo === "trivia-niveles" || record.modo === "trivia-pregunta") {
-        mostrarPreguntaJugador(record);
-        if (record.buzzer_activo) {
+function escucharRealtime() {
+  sb.channel("estado_juego_jugador_" + Date.now())
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "estado_juego" },
+      async function(payload) {
+        const record = payload.new;
+        if (!record.activa) {
+          ocultarPreguntaJugador();
+          ocultarBuzzer();
           yaBuzzee = false;
-          activarBuzzer();
-        } else {
-          desactivarBuzzer();
+          return;
         }
-      } else {
-        mostrarPreguntaJugador(record);
-        ocultarBuzzer();
-        yaBuzzee = false;
+        if (record.modo === "trivia-niveles" || record.modo === "trivia-pregunta") {
+          mostrarPreguntaJugador(record);
+          if (record.buzzer_activo) {
+            yaBuzzee = false;
+            activarBuzzer();
+          } else {
+            desactivarBuzzer();
+          }
+        } else {
+          mostrarPreguntaJugador(record);
+          ocultarBuzzer();
+          yaBuzzee = false;
+        }
       }
-    }
-  )
-  .subscribe();
+    )
+    .subscribe();
 
-  // Escuchar cambios en puntajes
-  sb.channel("jugadores_puntaje")
+  sb.channel("fase_jugador_" + Date.now())
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "estado_juego" },
+      async function(payload) {
+        const record = payload.new;
+        if (record.fase === "dados") {
+          document.getElementById("vista-espera").classList.add("oculto");
+          document.getElementById("vista-dados-jugador").classList.remove("oculto");
+          yaTire = false;
+        } else if (record.fase === "manual") {
+          document.getElementById("vista-espera").classList.remove("oculto");
+          document.getElementById("vista-dados-jugador").classList.add("oculto");
+          document.querySelector("#espera-box .subtitulo").textContent =
+            "El host está asignando los turnos...";
+        } else if (record.fase === "juego") {
+          document.getElementById("vista-espera").classList.add("oculto");
+          document.getElementById("vista-dados-jugador").classList.add("oculto");
+          document.getElementById("vista-juego").classList.remove("oculto");
+          document.getElementById("bienvenida").textContent = "¡Hola, " + miNombre + "!";
+          await verificarTurnoInicial();
+        }
+      }
+    )
+    .subscribe();
+
+  sb.channel("jugadores_puntaje_" + Date.now())
     .on("postgres_changes",
       { event: "UPDATE", schema: "public", table: "jugadores" },
       function(payload) {
         const record = payload.new;
         if (record.nombre === miNombre) {
           document.getElementById("mi-puntaje").textContent = record.puntaje;
+          actualizarCantidadesPU();
         }
       }
     )
     .subscribe();
 
-  sb.channel("turno_activo_jugador_" + miNombre)
+  sb.channel("turno_activo_jugador_" + Date.now())
     .on("postgres_changes",
       { event: "*", schema: "public", table: "estado_juego" },
       async function(payload) {
@@ -114,19 +112,7 @@ async function escucharRealtime() {
     )
     .subscribe();
 
-  sb.channel("jugadores_puntaje")
-  .on("postgres_changes",
-    { event: "UPDATE", schema: "public", table: "jugadores" },
-    function(payload) {
-      const record = payload.new;
-      if (record.nombre === miNombre) {
-        document.getElementById("mi-puntaje").textContent = record.puntaje;
-        actualizarCantidadesPU(); // ← agregá esta línea
-      }
-    }
-  )
-  .subscribe();
-escucharDados();    
+  escucharDados();
 }
 
 function mostrarPreguntaJugador(estado) {
