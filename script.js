@@ -1179,7 +1179,7 @@ async function renderizarPanelControl() {
   if (!contenedor) return;
 
   contenedor.innerHTML = ordenados.map(function(t) {
-    const jugador = jugadores.find(j => j.nombre === t.nombre) || { puntaje: 0 };
+    const jugador = jugadores.find(j => j.nombre === t.nombre) || { puntaje: 0, pu_saltar: 1, pu_amigo: 1, pu_twist: 1 };
     const esSuTurno = Number(t.turno) === turnoActivo;
 
     return `
@@ -1208,7 +1208,33 @@ async function renderizarPanelControl() {
               onclick="modificarPuntajePanel('${t.nombre}', -1)">−</button>
           </div>
         </div>
-
+        
+        <div class="panel-pu-control">
+          <span class="panel-pu-item pu-color-saltar"
+            title="Saltar turno">
+            ⏭
+            <input type="number" min="0" max="9"
+              class="input-pu-panel"
+              value="${j.pu_saltar || 0}"
+              onchange="editarPU('${t.nombre}', 'saltar', this.value)"/>
+          </span>
+          <span class="panel-pu-item pu-color-amigo"
+            title="Llamar a un amigo">
+            📞
+            <input type="number" min="0" max="9"
+              class="input-pu-panel"
+              value="${j.pu_amigo || 0}"
+              onchange="editarPU('${t.nombre}', 'amigo', this.value)"/>
+          </span>
+          <span class="panel-pu-item pu-color-twist"
+            title="Twist">
+            🌀
+            <input type="number" min="0" max="9"
+              class="input-pu-panel"
+              value="${j.pu_twist || 0}"
+              onchange="editarPU('${t.nombre}', 'twist', this.value)"/>
+          </span>
+        </div>
         <button class="btn-dado-panel" onclick="darDadosJugador()" title="Dar dados">🎲</button>
 
       </div>
@@ -1312,3 +1338,99 @@ sb.channel("dados_host")
     }
   )
   .subscribe();
+
+async function editarPU(nombre, tipo, cantidad) {
+  const num = Math.max(0, parseInt(cantidad) || 0);
+  await dbActualizarPowerUp(nombre, tipo, num);
+}
+
+
+let canalSolicitudes = null;
+
+function escucharSolicitudes() {
+  if (canalSolicitudes) {
+    sb.removeChannel(canalSolicitudes);
+    canalSolicitudes = null;
+  }
+
+  canalSolicitudes = sb.channel("solicitudes_host_" + Date.now())
+    .on("postgres_changes",
+      { event: "INSERT", schema: "public", table: "solicitudes_pu" },
+      async function(payload) {
+        const solicitud = payload.new;
+        mostrarSolicitudConsola(solicitud);
+      }
+    )
+    .subscribe();
+}
+
+function mostrarSolicitudConsola(solicitud) {
+  const consola = document.getElementById("consola-dados");
+  if (!consola) return;
+
+  const nombres = {
+    saltar: "⏭ Saltar turno",
+    amigo: "📞 Llamar a un amigo",
+    twist: "🌀 Twist"
+  };
+  const colores = {
+    saltar: "#e67e22",
+    amigo:  "#e74c3c",
+    twist:  "#9b59b6"
+  };
+
+  const wrap = document.createElement("div");
+  wrap.className = "consola-solicitud";
+  wrap.style.borderLeftColor = colores[solicitud.tipo] || "#555";
+  wrap.innerHTML = `
+    <div class="solicitud-texto">
+      <strong>${solicitud.nombre}</strong> quiere usar
+      <span style="color:${colores[solicitud.tipo]}">${nombres[solicitud.tipo]}</span>
+    </div>
+    <div class="solicitud-btns">
+      <button class="btn-aceptar-pu"
+        onclick="aceptarSolicitud(${solicitud.id}, '${solicitud.nombre}', '${solicitud.tipo}', this)">
+        ✓ Aceptar
+      </button>
+      <button class="btn-rechazar-pu"
+        onclick="rechazarSolicitud(${solicitud.id}, this)">
+        ✕ Rechazar
+      </button>
+    </div>
+  `;
+  consola.appendChild(wrap);
+  consola.scrollTop = consola.scrollHeight;
+}
+
+async function aceptarSolicitud(id, nombre, tipo, btnEl) {
+  await dbAceptarPowerUp(id, nombre, tipo);
+  const nombres = {
+    saltar: "Saltar turno", amigo: "Llamar a un amigo", twist: "Twist"
+  };
+  // Reemplazar la solicitud con confirmación
+  const wrap = btnEl.closest(".consola-solicitud");
+  if (wrap) {
+    wrap.innerHTML = `
+      <div class="consola-linea" style="border-left-color:#4caf82">
+        ✅ Power up aceptado — ${nombre} usa ${nombres[tipo]}
+      </div>`;
+  }
+}
+
+async function rechazarSolicitud(id, btnEl) {
+  await dbRechazarPowerUp(id);
+  const wrap = btnEl.closest(".consola-solicitud");
+  if (wrap) {
+    wrap.innerHTML = `
+      <div class="consola-linea" style="border-left-color:#cf6679">
+        ✕ Solicitud rechazada
+      </div>`;
+  }
+}
+
+function limpiarConsola() {
+  const consola = document.getElementById("consola-dados");
+  if (consola) consola.innerHTML = "";
+  ultimoMensajeConsola = "";
+  ultimaFaseDado = "";
+}
