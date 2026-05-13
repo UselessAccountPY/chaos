@@ -906,6 +906,7 @@ async function resetJuego() {
   });
 
   mostrarLobbyHost();
+  await dbResetSolicitudes();
 }
 
 let canalJugadores = null; // ← agregá esta variable al inicio del archivo
@@ -996,6 +997,7 @@ function mostrarJuegoHost() {
   document.getElementById("question-list").innerHTML = "<p>Seleccioná una categoría.</p>";
 
   inicializarPanelControl(); // ← inicializar panel
+  escucharSolicitudes();
 }
 
 async function darDados() {
