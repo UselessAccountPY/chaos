@@ -66,7 +66,34 @@
       </div>
     </div>
     <!-- Dado de categoría/pregunta -->
-    
+    <!-- Power ups -->
+  <div id="powerups-contenedor">
+    <div class="pu-btn pu-saltar" onclick="abrirPowerUp('saltar')">
+      <span class="pu-icono">⏭</span>
+      <span class="pu-nombre">Saltar turno</span>
+      <span class="pu-cantidad" id="pu-cantidad-saltar">x1</span>
+    </div>
+    <div class="pu-btn pu-amigo" onclick="abrirPowerUp('amigo')">
+      <span class="pu-icono">📞</span>
+      <span class="pu-nombre">Llamar a un amigo</span>
+      <span class="pu-cantidad" id="pu-cantidad-amigo">x1</span>
+    </div>
+    <div class="pu-btn pu-twist" onclick="abrirPowerUp('twist')">
+      <span class="pu-icono">🌀</span>
+      <span class="pu-nombre">Twist</span>
+      <span class="pu-cantidad" id="pu-cantidad-twist">x1</span>
+    </div>
+  </div>
+  
+  <!-- Panel power up -->
+  <div id="panel-powerup" class="oculto">
+    <div id="panel-pu-contenido">
+      <h3 id="panel-pu-titulo"></h3>
+      <p id="panel-pu-descripcion"></p>
+      <button id="btn-usar-pu" onclick="usarPowerUp()"></button>
+      <button class="btn-cerrar-pu" onclick="cerrarPowerUp()">✕ Cerrar</button>
+    </div>
+</div>
   </div>
 
   <script src="supabase.js"></script>
