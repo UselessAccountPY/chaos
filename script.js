@@ -1181,7 +1181,7 @@ async function renderizarPanelControl() {
   if (!contenedor) return;
 
   contenedor.innerHTML = ordenados.map(function(t) {
-    const jugador = jugadores.find(j => j.nombre === t.nombre) || { puntaje: 0, pu_saltar: 1, pu_amigo: 1, pu_twist: 1 };
+    const jugador = jugadores.find(jug => jug.nombre === t.nombre) || { puntaje: 0, pu_saltar: 1, pu_amigo: 1, pu_twist: 1 };
     const esSuTurno = Number(t.turno) === turnoActivo;
 
     return `
