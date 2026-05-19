@@ -20,6 +20,19 @@ function escucharCambios() {
         const nombre = payload.new.aviso_pu.split("|")[1];
         mostrarOverlaySaltar(nombre);
       }
+
+      // NUEVO: detectar aviso de power up amigo
+      if (payload.new.aviso_pu && payload.new.aviso_pu.startsWith("amigo|")) {
+        const nombre = payload.new.aviso_pu.split("|")[1];
+        mostrarOverlayAmigo(nombre);
+      }
+      
+      // NUEVO: detectar señal de contador
+      if (payload.new.contador_amigo === "iniciar") {
+        iniciarCountdown();
+      } else if (payload.new.contador_amigo === "detener" || payload.new.contador_amigo === "") {
+        detenerCountdown();
+      }
     }
   )
   .subscribe();
@@ -357,4 +370,57 @@ function mostrarOverlaySaltar(nombre) {
   setTimeout(function() {
     overlay.style.display = "none";
   }, 5000);
+}
+
+// Muestra el overlay rojo de "llamar a un amigo" durante 5 segundos
+function mostrarOverlayAmigo(nombre) {
+  const overlay = document.getElementById("overlay-amigo");
+  const texto = document.getElementById("overlay-amigo-texto");
+  texto.textContent = nombre + " llama a un amigo";
+  overlay.style.display = "flex";
+  setTimeout(function() {
+    overlay.style.display = "none";
+  }, 5000);
+}
+
+// Variable para guardar el intervalo del countdown y poder detenerlo
+let intervaloContador = null;
+
+// Inicia el countdown de 60 segundos en pantalla
+function iniciarCountdown() {
+  // Si ya había uno corriendo, lo cancela primero
+  if (intervaloContador) clearInterval(intervaloContador);
+
+  const el = document.getElementById("contador-amigo-pantalla");
+  if (!el) return;
+
+  let segundos = 60;
+  el.style.display = "block";
+  el.textContent = "1:00";
+
+  intervaloContador = setInterval(function() {
+    segundos--;
+    const mins = Math.floor(segundos / 60);
+    const segs = segundos % 60;
+    // Formato "0:59", "0:08", etc.
+    el.textContent = mins + ":" + (segs < 10 ? "0" : "") + segs;
+
+    if (segundos <= 0) {
+      clearInterval(intervaloContador);
+      intervaloContador = null;
+      // Parpadeo al llegar a 0
+      el.style.color = "#fff";
+      setTimeout(function() { el.style.display = "none"; }, 2000);
+    }
+  }, 1000);
+}
+
+// Detiene y oculta el countdown
+function detenerCountdown() {
+  if (intervaloContador) {
+    clearInterval(intervaloContador);
+    intervaloContador = null;
+  }
+  const el = document.getElementById("contador-amigo-pantalla");
+  if (el) el.style.display = "none";
 }
