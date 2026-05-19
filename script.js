@@ -1254,6 +1254,8 @@ async function modificarPuntajePanel(nombre, signo) {
 }
 
 async function siguienteTurno() {
+  // Si había un contador de "amigo" corriendo, lo apagamos
+  await dbSetContadorAmigo("");
   await dbSiguienteTurno();
 }
 
