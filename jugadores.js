@@ -46,6 +46,12 @@ function escucharRealtime() {
           const nombre = record.aviso_pu.split("|")[1];
           mostrarBannerPU(nombre + " ha saltado el turno");
         }
+
+        // NUEVO
+        if (record.aviso_pu && record.aviso_pu.startsWith("amigo|")) {
+          const nombre = record.aviso_pu.split("|")[1];
+          mostrarBannerPU(nombre + " llama a un amigo 📞");
+        }
         
         if (!record.activa) {
           ocultarPreguntaJugador();
