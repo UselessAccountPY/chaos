@@ -237,3 +237,19 @@ async function dbActualizarPowerUp(nombre, tipo, cantidad) {
 async function dbResetSolicitudes() {
   await sb.from("solicitudes_pu").delete().neq("id", 0);
 }
+
+// Emite un aviso temporal de power up para que todas las pantallas lo muestren.
+// nombre = quién usó el power up, tipo = "saltar" | "amigo" | "twist"
+async function dbEmitirAvisoSaltar(nombre) {
+  await sb.from("estado_juego")
+    .update({ aviso_pu: "saltar|" + nombre })
+    .eq("id", 1);
+
+  // Lo borramos después de 6 segundos para que no quede "pegado"
+  // si alguien recarga la página más tarde
+  setTimeout(async function() {
+    await sb.from("estado_juego")
+      .update({ aviso_pu: "" })
+      .eq("id", 1);
+  }, 6000);
+}
