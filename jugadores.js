@@ -40,6 +40,13 @@ function escucharRealtime() {
       { event: "*", schema: "public", table: "estado_juego" },
       async function(payload) {
         const record = payload.new;
+
+        // Detectar aviso de power up saltar (independiente del estado activa)
+        if (record.aviso_pu && record.aviso_pu.startsWith("saltar|")) {
+          const nombre = record.aviso_pu.split("|")[1];
+          mostrarBannerPU(nombre + " ha saltado el turno");
+        }
+        
         if (!record.activa) {
           ocultarPreguntaJugador();
           ocultarBuzzer();
@@ -431,4 +438,16 @@ async function usarPowerUp() {
   if (!puActivo || !miNombre) return;
   await dbSolicitarPowerUp(miNombre, puActivo);
   cerrarPowerUp();
+}
+
+// Muestra un banner temporal en la parte superior de la pantalla del jugador
+function mostrarBannerPU(mensaje) {
+  const banner = document.getElementById("banner-pu");
+  if (!banner) return;
+  banner.textContent = mensaje;
+  banner.style.display = "block";
+
+  setTimeout(function() {
+    banner.style.display = "none";
+  }, 5000);
 }
