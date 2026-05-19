@@ -8,15 +8,21 @@ window.addEventListener("load", async function() {
 
 function escucharCambios() {
   sb.channel("pantalla_estado")
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "estado_juego" },
-      async function(payload) {
-        aplicarEstado(payload.new);
-        await actualizarBarraTurnos(payload.new);
-        await manejarPuntajes(payload.new);
+  .on("postgres_changes",
+    { event: "*", schema: "public", table: "estado_juego" },
+    async function(payload) {
+      aplicarEstado(payload.new);
+      await actualizarBarraTurnos(payload.new);
+      await manejarPuntajes(payload.new);
+
+      // Detectar aviso de power up saltar
+      if (payload.new.aviso_pu && payload.new.aviso_pu.startsWith("saltar|")) {
+        const nombre = payload.new.aviso_pu.split("|")[1];
+        mostrarOverlaySaltar(nombre);
       }
-    )
-    .subscribe();
+    }
+  )
+  .subscribe();
 
   sb.channel("pantalla_jugadores")
     .on("postgres_changes",
@@ -337,3 +343,18 @@ sb.channel("dados_pantalla")
     }
   )
   .subscribe();
+
+// Muestra el overlay naranja de "saltar turno" durante 5 segundos
+function mostrarOverlaySaltar(nombre) {
+  const overlay = document.getElementById("overlay-saltar");
+  const texto = document.getElementById("overlay-saltar-texto");
+  texto.textContent = nombre + " ha saltado el turno";
+
+  // Mostrar usando flex (necesario para que el centrado funcione)
+  overlay.style.display = "flex";
+
+  // Ocultarlo después de 5 segundos
+  setTimeout(function() {
+    overlay.style.display = "none";
+  }, 5000);
+}
