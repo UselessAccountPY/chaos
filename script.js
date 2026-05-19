@@ -1365,7 +1365,7 @@ function escucharSolicitudes() {
     .subscribe();
 }
 
-function mostrarSolicitudEnConsola(solicitud) {
+function mostrarSolicitudConsola(solicitud) {
   const consola = document.getElementById("consola-dados");
   if (!consola) return;
 
