@@ -1406,13 +1406,29 @@ async function aceptarSolicitud(id, nombre, tipo, btnEl) {
   const nombres = {
     saltar: "Saltar turno", amigo: "Llamar a un amigo", twist: "Twist"
   };
-  // Reemplazar la solicitud con confirmación
+
+  // Mostrar confirmación en la consola del host
   const wrap = btnEl.closest(".consola-solicitud");
   if (wrap) {
     wrap.innerHTML = `
       <div class="consola-linea" style="border-left-color:#4caf82">
         ✅ Power up aceptado — ${nombre} usa ${nombres[tipo]}
       </div>`;
+  }
+
+  // Comportamiento específico de cada power up
+  if (tipo === "saltar") {
+    // 1. Emitir aviso a pantalla.html y jugadores.html via Supabase
+    await dbEmitirAvisoSaltar(nombre);
+
+    // 2. Deseleccionar categoría y pregunta activa
+    //    (mismo efecto que loadCategory: limpia la pregunta de la pantalla grande)
+    await dbSetEstado("", "", "", false);
+    await dbSetDados(0, 0, "");
+    document.getElementById("question-list").innerHTML = "<p>Seleccioná una categoría.</p>";
+
+    // 3. Avanzar al siguiente turno (igual que el botón "Siguiente turno")
+    await siguienteTurno();
   }
 }
 
