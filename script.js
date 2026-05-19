@@ -1312,6 +1312,40 @@ function actualizarConsolaHost(mensaje) {
   consola.scrollTop = consola.scrollHeight;
 }
 
+function mostrarSolicitudConsola(solicitud) {
+  const consola = document.getElementById("consola-dados");
+  if (!consola) return;
+
+  const wrap = document.createElement("div");
+  wrap.className = "consola-solicitud";
+
+  // Botones de contador solo para el power up "amigo"
+  const botonesContador = solicitud.tipo === "amigo" ? `
+    <div style="display:flex; gap:0.5rem; margin-top:0.4rem;">
+      <button class="btn-aceptar-pu" onclick="iniciarContador()">▶ Iniciar contador</button>
+      <button class="btn-rechazar-pu" onclick="detenerContador()">■ Detener contador</button>
+    </div>
+  ` : "";
+
+  wrap.innerHTML = `
+    <div class="solicitud-texto">
+      🔔 ${solicitud.nombre} quiere usar <strong>${solicitud.tipo}</strong>
+    </div>
+    <div class="solicitud-btns">
+      <button class="btn-aceptar-pu"
+        onclick="aceptarSolicitud(${solicitud.id}, '${solicitud.nombre}', '${solicitud.tipo}', this)">
+        ✔ Aceptar
+      </button>
+      <button class="btn-rechazar-pu"
+        onclick="rechazarSolicitud(${solicitud.id}, this)">
+        ✕ Rechazar
+      </button>
+    </div>
+    ${botonesContador}
+  `;
+  consola.appendChild(wrap);
+  consola.scrollTop = consola.scrollHeight;
+}
 
 // Escuchar cambios en estado para actualizar consola
 let ultimaFaseDado = "";
@@ -1363,41 +1397,6 @@ function escucharSolicitudes() {
       }
     )
     .subscribe();
-}
-
-function mostrarSolicitudConsola(solicitud) {
-  const consola = document.getElementById("consola-dados");
-  if (!consola) return;
-
-  const wrap = document.createElement("div");
-  wrap.className = "consola-solicitud";
-
-  // Botones de contador solo para el power up "amigo"
-  const botonesContador = solicitud.tipo === "amigo" ? `
-    <div style="display:flex; gap:0.5rem; margin-top:0.4rem;">
-      <button class="btn-aceptar-pu" onclick="iniciarContador()">▶ Iniciar contador</button>
-      <button class="btn-rechazar-pu" onclick="detenerContador()">■ Detener contador</button>
-    </div>
-  ` : "";
-
-  wrap.innerHTML = `
-    <div class="solicitud-texto">
-      🔔 ${solicitud.nombre} quiere usar <strong>${solicitud.tipo}</strong>
-    </div>
-    <div class="solicitud-btns">
-      <button class="btn-aceptar-pu"
-        onclick="aceptarSolicitud(${solicitud.id}, '${solicitud.nombre}', '${solicitud.tipo}', this)">
-        ✔ Aceptar
-      </button>
-      <button class="btn-rechazar-pu"
-        onclick="rechazarSolicitud(${solicitud.id}, this)">
-        ✕ Rechazar
-      </button>
-    </div>
-    ${botonesContador}
-  `;
-  consola.appendChild(wrap);
-  consola.scrollTop = consola.scrollHeight;
 }
 
 
