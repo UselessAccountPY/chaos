@@ -1363,43 +1363,41 @@ function escucharSolicitudes() {
     .subscribe();
 }
 
-function mostrarSolicitudConsola(solicitud) {
+function mostrarSolicitudEnConsola(solicitud) {
   const consola = document.getElementById("consola-dados");
   if (!consola) return;
 
-  const nombres = {
-    saltar: "⏭ Saltar turno",
-    amigo: "📞 Llamar a un amigo",
-    twist: "🌀 Twist"
-  };
-  const colores = {
-    saltar: "#e67e22",
-    amigo:  "#e74c3c",
-    twist:  "#9b59b6"
-  };
-
   const wrap = document.createElement("div");
   wrap.className = "consola-solicitud";
-  wrap.style.borderLeftColor = colores[solicitud.tipo] || "#555";
+
+  // Botones de contador solo para el power up "amigo"
+  const botonesContador = solicitud.tipo === "amigo" ? `
+    <div style="display:flex; gap:0.5rem; margin-top:0.4rem;">
+      <button class="btn-aceptar-pu" onclick="iniciarContador()">▶ Iniciar contador</button>
+      <button class="btn-rechazar-pu" onclick="detenerContador()">■ Detener contador</button>
+    </div>
+  ` : "";
+
   wrap.innerHTML = `
     <div class="solicitud-texto">
-      <strong>${solicitud.nombre}</strong> quiere usar
-      <span style="color:${colores[solicitud.tipo]}">${nombres[solicitud.tipo]}</span>
+      🔔 ${solicitud.nombre} quiere usar <strong>${solicitud.tipo}</strong>
     </div>
     <div class="solicitud-btns">
       <button class="btn-aceptar-pu"
         onclick="aceptarSolicitud(${solicitud.id}, '${solicitud.nombre}', '${solicitud.tipo}', this)">
-        ✓ Aceptar
+        ✔ Aceptar
       </button>
       <button class="btn-rechazar-pu"
         onclick="rechazarSolicitud(${solicitud.id}, this)">
         ✕ Rechazar
       </button>
     </div>
+    ${botonesContador}
   `;
   consola.appendChild(wrap);
   consola.scrollTop = consola.scrollHeight;
 }
+
 
 async function aceptarSolicitud(id, nombre, tipo, btnEl) {
   await dbAceptarPowerUp(id, nombre, tipo);
@@ -1430,6 +1428,12 @@ async function aceptarSolicitud(id, nombre, tipo, btnEl) {
     // 3. Avanzar al siguiente turno (igual que el botón "Siguiente turno")
     await siguienteTurno();
   }
+
+  // NUEVO: comportamiento de llamar a un amigo
+  if (tipo === "amigo") {
+    // Emitir aviso visual a pantalla.html y jugadores.html
+    await dbEmitirAvisoAmigo(nombre);
+  }
 }
 
 async function rechazarSolicitud(id, btnEl) {
@@ -1448,4 +1452,16 @@ function limpiarConsola() {
   if (consola) consola.innerHTML = "";
   ultimoMensajeConsola = "";
   ultimaFaseDado = "";
+}
+
+// Le dice a pantalla.html que empiece el countdown de 1 minuto
+async function iniciarContador() {
+  await dbSetContadorAmigo("iniciar");
+  actualizarConsolaHost("▶ Contador iniciado");
+}
+
+// Le dice a pantalla.html que detenga el countdown
+async function detenerContador() {
+  await dbSetContadorAmigo("detener");
+  actualizarConsolaHost("■ Contador detenido");
 }
