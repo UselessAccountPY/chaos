@@ -253,3 +253,24 @@ async function dbEmitirAvisoSaltar(nombre) {
       .eq("id", 1);
   }, 6000);
 }
+
+// Emite el aviso visual de "llamar a un amigo" (igual que saltar)
+async function dbEmitirAvisoAmigo(nombre) {
+  await sb.from("estado_juego")
+    .update({ aviso_pu: "amigo|" + nombre })
+    .eq("id", 1);
+
+  setTimeout(async function() {
+    await sb.from("estado_juego")
+      .update({ aviso_pu: "" })
+      .eq("id", 1);
+  }, 6000);
+}
+
+// Envía la señal de iniciar o detener el contador en pantalla.html
+// señal puede ser "iniciar" o "detener"
+async function dbSetContadorAmigo(señal) {
+  await sb.from("estado_juego")
+    .update({ contador_amigo: señal })
+    .eq("id", 1);
+}
