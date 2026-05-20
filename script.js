@@ -784,6 +784,10 @@ const categories = [
 
 let ultimoMensajeConsola = ""; // ← agregá al inicio de script.js
 
+// Indica si el twist está activo para el jugador de turno
+let twistActivo = false;
+
+
 function actualizarConsolaHost(mensaje) {
   // Evitar duplicados consecutivos
   if (mensaje === ultimoMensajeConsola) return;
@@ -829,15 +833,34 @@ async function loadCategory(index) {
 
 
 async function loadQuestion(categoryIndex, questionIndex) {
-  const question = categories[categoryIndex].questions[questionIndex];
+  const questionOriginal = categories[categoryIndex].questions[questionIndex];
 
-  // Avisar a pantalla y jugadores via Supabase
+  // Si twist está activo Y la pregunta tiene versión twist, usarla
+  // Conservamos una referencia a la original para marcarla como respondida
+  const usandoTwist = twistActivo && questionOriginal.twist;
+  const question = usandoTwist
+    ? { ...questionOriginal.twist, answered: questionOriginal.answered }
+    : questionOriginal;
+
+  // El texto del modo actual para mostrar en el header
+  const modoBadge = usandoTwist
+    ? `<span style="background:#4a0070; border:1px solid #9b59b6; color:#c39bd3;
+        border-radius:6px; padding:0.2rem 0.7rem; font-size:0.85rem; font-weight:bold;">
+        🌀 TWIST</span>`
+    : (twistActivo && !questionOriginal.twist
+        ? `<span style="background:#222; border:1px solid #555; color:#888;
+            border-radius:6px; padding:0.2rem 0.7rem; font-size:0.85rem;">
+            sin twist</span>`
+        : "");
+
+  // Publicar la pregunta correcta a pantalla y jugadores
   await dbSetEstado(
     categories[categoryIndex].name,
     question.text,
     question.description,
     true
   );
+
   const container = document.getElementById("question-list");
 
   const winRows = question.win.map(function(w, i) {
@@ -870,8 +893,9 @@ async function loadQuestion(categoryIndex, questionIndex) {
     <div class="question-header">
       <button onclick="loadCategory(${categoryIndex})">← Volver</button>
       <h2>${categories[categoryIndex].name} — ${question.text}</h2>
+      ${modoBadge}
     </div>
-    <div class="question-card ${question.answered ? "answered" : ""}">
+    <div class="question-card ${questionOriginal.answered ? "answered" : ""}">
       <p class="question-text">${question.text}</p>
       <p class="question-description">${question.description}</p>
       <div id="outcomes-container">
@@ -881,13 +905,15 @@ async function loadQuestion(categoryIndex, questionIndex) {
     </div>
   `;
 
+  // renderizar inputs usando la pregunta que se está mostrando
   await renderizarInputsJugadores(question);
 
-  if (!question.answered) {
+  if (!questionOriginal.answered) {
     const markBtn = document.createElement("button");
     markBtn.textContent = "Marcar como respondida";
     markBtn.onclick = function() {
-      question.answered = true;
+      // Siempre marcar la original (no el twist)
+      questionOriginal.answered = true;
       loadCategory(categoryIndex);
     };
     container.appendChild(markBtn);
@@ -1530,8 +1556,10 @@ async function modificarPuntajePanel(nombre, signo) {
 }
 
 async function siguienteTurno() {
-  // Si había un contador de "amigo" corriendo, lo apagamos
   await dbSetContadorAmigo("");
+  // Desactivar twist si estaba activo
+  twistActivo = false;
+  actualizarIndicadorTwist();
   await dbSiguienteTurno();
 }
 
@@ -1577,6 +1605,25 @@ async function recibirResultadoDado(tipo, valor) {
   }
 }
 
+// Muestra u oculta el banner de "MODO TWIST" encima de los botones de categoría
+function actualizarIndicadorTwist() {
+  // Buscar o crear el banner
+  let banner = document.getElementById("banner-twist-host");
+
+  if (twistActivo) {
+    if (!banner) {
+      banner = document.createElement("div");
+      banner.id = "banner-twist-host";
+      banner.innerHTML = "🌀 MODO TWIST ACTIVO — las preguntas muestran la versión twist";
+      // Insertarlo encima de los botones de categoría
+      const categoryButtons = document.getElementById("category-buttons");
+      categoryButtons.parentNode.insertBefore(banner, categoryButtons);
+    }
+    banner.style.display = "block";
+  } else {
+    if (banner) banner.style.display = "none";
+  }
+}
 
 function actualizarConsolaHost(mensaje) {
   const consola = document.getElementById("consola-dados");
@@ -1713,7 +1760,26 @@ async function aceptarSolicitud(id, nombre, tipo, btnEl) {
     }
     await dbEmitirAvisoAmigo(nombre);
 
-  } else {
+  } else if (tipo === "twist") {
+    // Activar el modo twist
+    twistActivo = true;
+
+    // Actualizar visual del panel de categorías para avisar al host
+    actualizarIndicadorTwist();
+
+    // Emitir aviso visual a pantalla y jugadores
+    await dbEmitirAvisoTwist(nombre);
+
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="consola-linea" style="border-left-color:#9b59b6">
+          ✅ Power up aceptado — ${nombre} usa Twist
+        </div>`;
+    }
+  }
+  
+  
+  else {
     // Otros power ups: reemplaza todo normalmente
     if (wrap) {
       wrap.innerHTML = `
