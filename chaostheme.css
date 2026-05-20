@@ -668,3 +668,17 @@ button:hover {
   text-align: center;
   width: 36px;
 }
+
+/* Banner de modo twist activo en el host */
+#banner-twist-host {
+  display: none;
+  background: #1a0028;
+  border: 2px solid #9b59b6;
+  border-radius: 8px;
+  color: #c39bd3;
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 1rem;
+  text-align: center;
+}
