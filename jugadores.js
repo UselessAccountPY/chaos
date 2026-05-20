@@ -44,13 +44,13 @@ function escucharRealtime() {
         // Detectar aviso de power up saltar (independiente del estado activa)
         if (record.aviso_pu && record.aviso_pu.startsWith("saltar|")) {
           const nombre = record.aviso_pu.split("|")[1];
-          mostrarBannerPU(nombre + " ha saltado el turno");
+          mostrarBannerPU(nombre + " ha saltado el turno", "saltar");
         }
 
         // NUEVO
         if (record.aviso_pu && record.aviso_pu.startsWith("amigo|")) {
           const nombre = record.aviso_pu.split("|")[1];
-          mostrarBannerPU(nombre + " llama a un amigo 📞");
+          mostrarBannerPU(nombre + " llama a un amigo 📞", "amigo");
         }
         
         if (!record.activa) {
@@ -446,14 +446,18 @@ async function usarPowerUp() {
   cerrarPowerUp();
 }
 
-// Muestra un banner temporal en la parte superior de la pantalla del jugador
-function mostrarBannerPU(mensaje) {
+// tipo puede ser "saltar" o "amigo" — aplica el color correcto via CSS
+function mostrarBannerPU(mensaje, tipo) {
   const banner = document.getElementById("banner-pu");
   if (!banner) return;
+
+  // Limpiar clases de color anteriores y aplicar la nueva
+  banner.className = "banner-" + tipo;
   banner.textContent = mensaje;
   banner.style.display = "block";
 
   setTimeout(function() {
     banner.style.display = "none";
+    banner.className = "";
   }, 5000);
 }
