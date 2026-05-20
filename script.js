@@ -1406,34 +1406,45 @@ async function aceptarSolicitud(id, nombre, tipo, btnEl) {
     saltar: "Saltar turno", amigo: "Llamar a un amigo", twist: "Twist"
   };
 
-  // Mostrar confirmación en la consola del host
   const wrap = btnEl.closest(".consola-solicitud");
-  if (wrap) {
-    wrap.innerHTML = `
-      <div class="consola-linea" style="border-left-color:#4caf82">
-        ✅ Power up aceptado — ${nombre} usa ${nombres[tipo]}
-      </div>`;
-  }
 
-  // Comportamiento específico de cada power up
   if (tipo === "saltar") {
-    // 1. Emitir aviso a pantalla.html y jugadores.html via Supabase
+    // Saltar: reemplaza todo, no necesita botones extra
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="consola-linea" style="border-left-color:#4caf82">
+          ✅ Power up aceptado — ${nombre} usa ${nombres[tipo]}
+        </div>`;
+    }
     await dbEmitirAvisoSaltar(nombre);
-
-    // 2. Deseleccionar categoría y pregunta activa
-    //    (mismo efecto que loadCategory: limpia la pregunta de la pantalla grande)
     await dbSetEstado("", "", "", false);
     await dbSetDados(0, 0, "");
     document.getElementById("question-list").innerHTML = "<p>Seleccioná una categoría.</p>";
-
-    // 3. Avanzar al siguiente turno (igual que el botón "Siguiente turno")
     await siguienteTurno();
-  }
 
-  // NUEVO: comportamiento de llamar a un amigo
-  if (tipo === "amigo") {
-    // Emitir aviso visual a pantalla.html y jugadores.html
+  } else if (tipo === "amigo") {
+    // Amigo: reemplaza los botones aceptar/rechazar pero mantiene los del contador
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="consola-linea" style="border-left-color:#4caf82">
+          ✅ Power up aceptado — ${nombre} usa ${nombres[tipo]}
+        </div>
+        <div style="display:flex; gap:0.5rem; margin-top:0.4rem; flex-wrap:wrap;">
+          <button class="btn-aceptar-pu" onclick="iniciarContador()">▶ Iniciar contador</button>
+          <button class="btn-rechazar-pu" onclick="detenerContador()">■ Detener contador</button>
+        </div>
+      `;
+    }
     await dbEmitirAvisoAmigo(nombre);
+
+  } else {
+    // Otros power ups: reemplaza todo normalmente
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="consola-linea" style="border-left-color:#4caf82">
+          ✅ Power up aceptado — ${nombre} usa ${nombres[tipo]}
+        </div>`;
+    }
   }
 }
 
