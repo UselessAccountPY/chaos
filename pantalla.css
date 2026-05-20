@@ -426,3 +426,54 @@ body {
   margin-bottom: -0.5rem;
   z-index: 2;
 }
+
+/* --- Overlays de power ups --- */
+.overlay-pu {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.overlay-pu-icono {
+  font-size: 5rem;
+}
+
+.overlay-pu-texto {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+
+#overlay-saltar {
+  background: #2b1a00;
+  border: 8px solid #e67e22;
+}
+
+#overlay-saltar .overlay-pu-texto {
+  color: #e67e22;
+}
+
+#overlay-amigo {
+  background: #2b0000;
+  border: 8px solid #e74c3c;
+}
+
+#overlay-amigo .overlay-pu-texto {
+  color: #e74c3c;
+}
+
+/* Contador de amigo dentro del box de pregunta */
+#contador-amigo-pantalla {
+  display: none;
+  font-size: 4rem;
+  font-weight: bold;
+  color: #e74c3c;
+  letter-spacing: 0.1rem;
+  margin-top: 0.5rem;
+}
