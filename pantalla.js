@@ -25,13 +25,23 @@ function escucharCambios() {
       if (payload.new.aviso_pu && payload.new.aviso_pu.startsWith("amigo|")) {
         const nombre = payload.new.aviso_pu.split("|")[1];
         mostrarOverlayAmigo(nombre);
+        // Mostrar el contador parado en 1:00.00 desde el momento de aceptación
+        actualizarTextoContadores("1:00.00");
+        mostrarContadores();
       }
       
       // NUEVO: detectar señal de contador
       if (payload.new.contador_amigo === "iniciar") {
         iniciarCountdown();
-      } else if (payload.new.contador_amigo === "detener" || payload.new.contador_amigo === "") {
+      } else if (payload.new.contador_amigo === "detener") {
+        // Congela el número actual sin ocultarlo
         detenerCountdown();
+      } else if (payload.new.contador_amigo === "") {
+        // Vacío = limpiar completamente (ej: siguiente turno)
+        if (rafContador) cancelAnimationFrame(rafContador);
+        rafContador = null;
+        msAcumulados = 0;
+        ocultarContadores();
       }
     }
   )
