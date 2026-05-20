@@ -5,7 +5,7 @@ const categories = [
     name: "Perder",
     questions: [
       {
-        text: "Huevo",
+        text: "Mirá mi Huevo",
         description: "Hace algo con el huevo que no esté en mi lista",
         answered: false,
         win: [
@@ -22,7 +22,18 @@ const categories = [
           { condition: "Regalarlo", points: -150 },
           { condition: "Hablarle", points: -100 },
           { condition: "Dejarlo", points: -50 },
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Ruleta",
@@ -33,7 +44,18 @@ const categories = [
         ],
         lose: [
           { condition: "Sujeto a la ruleta", points: 0 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Presentación",
@@ -44,7 +66,18 @@ const categories = [
         ],
         lose: [
           { condition: "Se rió", points: -1000 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Ecolocación",
@@ -57,7 +90,18 @@ const categories = [
           { condition: "Chocar contra un objeto", points: -200 },
           { condition: "Se quita la venda", points: -2000 },
           { condition: "No usó ecolocación", points: -1500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Termómetro",
@@ -69,7 +113,18 @@ const categories = [
         lose: [
           { condition: "Termómetro", points: -200 },
           { condition: "Se rindió", points: -1000 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Hablá con mi IA",
@@ -81,7 +136,18 @@ const categories = [
         lose: [
           { condition: "Se rindió", points: -1000 },
           { condition: "Se quedó sin tokens", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       }
     ]
   },
@@ -100,7 +166,18 @@ const categories = [
           { condition: "No le contestó", points: -300 },
           { condition: "Pilló que algo andaba mal", points: -500 },
           { condition: "Se rindió antes de decir las 5 palabras", points: -400 },
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Historia",
@@ -111,7 +188,18 @@ const categories = [
         ],
         lose: [
           { condition: "No publicar", points: -700 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Improvización",
@@ -125,7 +213,18 @@ const categories = [
           { condition: "Se rió", points: -150 },
           { condition: "Salió del personaje", points: -100 },
           { condition: "No hizo la improvización", points: -700 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Baile",
@@ -136,7 +235,18 @@ const categories = [
         ],
         lose: [
           { condition: "No bailó", points: -700 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "A Capela",
@@ -147,7 +257,18 @@ const categories = [
         ],
         lose: [
           { condition: "No cantó", points: -700 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Chistoso",
@@ -158,7 +279,18 @@ const categories = [
         ],
         lose: [
           { condition: "No hizo reír a nadie", points: -700 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Loro",
@@ -169,7 +301,18 @@ const categories = [
         ],
         lose: [
           { condition: "Imitó mal", points: -100 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Resistí el cringe",
@@ -180,7 +323,19 @@ const categories = [
         ],
         lose: [
           { condition: "No resisiió", points: -700 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ],
+          
+        }
       },
       {
         text: "Freestyle",
@@ -192,7 +347,18 @@ const categories = [
         lose: [
           { condition: "No se bancó", points: -700 },
           { condition: "No rimó", points: -50 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
     ]
   },
@@ -208,7 +374,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Distancia",
@@ -219,7 +396,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Temperatura",
@@ -230,7 +418,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Norte",
@@ -241,7 +440,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Ndapytai",
@@ -252,7 +462,18 @@ const categories = [
         ],
         lose: [
           { condition: "Último", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Música",
@@ -263,7 +484,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Telepatía",
@@ -275,7 +507,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Frasco",
@@ -286,7 +529,18 @@ const categories = [
         ],
         lose: [
           { condition: "Perdió", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Receta",
@@ -298,7 +552,18 @@ const categories = [
         lose: [
           { condition: "Ingrediente faltante", points: -100 },
           { condition: "Ingrediente extra", points: -50 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       },
       {
         text: "Yummy",
@@ -309,7 +574,18 @@ const categories = [
         ],
         lose: [
           { condition: "Comí el osito", points: -500 }
-        ]
+        ],
+        twist: {
+          text: "Rompelo",
+          description: "Sobre tu cabeza",
+          win: [
+            { condition: "Lo hizo (sujeto a tiempo)", points: 0 }
+          ],
+          lose: [
+            { condition: "No lo rompió a tiempo", points: -2000 },
+            { condition: "No lo rompió contra su cabeza", points: -2000 }
+          ]
+        }
       }
     ]
   },
