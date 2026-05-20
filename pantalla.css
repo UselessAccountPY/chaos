@@ -477,3 +477,12 @@ body {
   letter-spacing: 0.1rem;
   margin-top: 0.5rem;
 }
+
+#overlay-twist {
+  background: #1a0028;
+  border: 8px solid #9b59b6;
+}
+
+#overlay-twist .overlay-pu-texto {
+  color: #c39bd3;
+}
