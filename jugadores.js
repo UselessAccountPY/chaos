@@ -52,6 +52,11 @@ function escucharRealtime() {
           const nombre = record.aviso_pu.split("|")[1];
           mostrarBannerPU(nombre + " llama a un amigo 📞", "amigo");
         }
+
+        if (record.aviso_pu && record.aviso_pu.startsWith("twist|")) {
+          const nombre = record.aviso_pu.split("|")[1];
+          mostrarBannerPU(nombre + " activa el Twist 🌀", "twist");
+        }
         
         if (!record.activa) {
           ocultarPreguntaJugador();
