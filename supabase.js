@@ -274,3 +274,15 @@ async function dbSetContadorAmigo(señal) {
     .update({ contador_amigo: señal })
     .eq("id", 1);
 }
+
+async function dbEmitirAvisoTwist(nombre) {
+  await sb.from("estado_juego")
+    .update({ aviso_pu: "twist|" + nombre })
+    .eq("id", 1);
+
+  setTimeout(async function() {
+    await sb.from("estado_juego")
+      .update({ aviso_pu: "" })
+      .eq("id", 1);
+  }, 6000);
+}
