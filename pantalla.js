@@ -383,44 +383,87 @@ function mostrarOverlayAmigo(nombre) {
   }, 5000);
 }
 
-// Variable para guardar el intervalo del countdown y poder detenerlo
-let intervaloContador = null;
+// Guarda la referencia al loop de animación para poder cancelarlo
+let rafContador = null;
+// Guarda el momento exacto en que arrancó (o reanudó) el contador
+let tiempoInicioContador = null;
+// Guarda los milisegundos que ya pasaron antes de una pausa
+let msAcumulados = 0;
+// Duración total del contador en ms
+const DURACION_CONTADOR = 60000;
 
-// Inicia el countdown de 60 segundos en pantalla
-function iniciarCountdown() {
-  // Si ya había uno corriendo, lo cancela primero
-  if (intervaloContador) clearInterval(intervaloContador);
-
-  const el = document.getElementById("contador-amigo-pantalla");
-  if (!el) return;
-
-  let segundos = 60;
-  el.style.display = "block";
-  el.textContent = "1:00";
-
-  intervaloContador = setInterval(function() {
-    segundos--;
-    const mins = Math.floor(segundos / 60);
-    const segs = segundos % 60;
-    // Formato "0:59", "0:08", etc.
-    el.textContent = mins + ":" + (segs < 10 ? "0" : "") + segs;
-
-    if (segundos <= 0) {
-      clearInterval(intervaloContador);
-      intervaloContador = null;
-      // Parpadeo al llegar a 0
-      el.style.color = "#fff";
-      setTimeout(function() { el.style.display = "none"; }, 2000);
-    }
-  }, 1000);
+// Formatea ms totales restantes como "0:59.43"
+function formatearContador(msRestantes) {
+  const totalSegundos = Math.max(0, msRestantes);
+  const mins = Math.floor(totalSegundos / 60000);
+  const segs = Math.floor((totalSegundos % 60000) / 1000);
+  const cents = Math.floor((totalSegundos % 1000) / 10);
+  return mins + ":" + (segs < 10 ? "0" : "") + segs + "." + (cents < 10 ? "0" : "") + cents;
 }
 
-// Detiene y oculta el countdown
-function detenerCountdown() {
-  if (intervaloContador) {
-    clearInterval(intervaloContador);
-    intervaloContador = null;
+// Actualiza el texto en ambos contadores (pregunta normal y trivia)
+function actualizarTextoContadores(texto) {
+  const elPregunta = document.getElementById("contador-amigo-pantalla");
+  const elTrivia   = document.getElementById("contador-amigo-trivia");
+  if (elPregunta) elPregunta.textContent = texto;
+  if (elTrivia)   elTrivia.textContent   = texto;
+}
+
+// Muestra ambos contadores
+function mostrarContadores() {
+  const elPregunta = document.getElementById("contador-amigo-pantalla");
+  const elTrivia   = document.getElementById("contador-amigo-trivia");
+  if (elPregunta) elPregunta.style.display = "block";
+  if (elTrivia)   elTrivia.style.display   = "block";
+}
+
+// Oculta ambos contadores
+function ocultarContadores() {
+  const elPregunta = document.getElementById("contador-amigo-pantalla");
+  const elTrivia   = document.getElementById("contador-amigo-trivia");
+  if (elPregunta) elPregunta.style.display = "none";
+  if (elTrivia)   elTrivia.style.display   = "none";
+}
+
+function iniciarCountdown() {
+  // Cancelar cualquier loop anterior
+  if (rafContador) cancelAnimationFrame(rafContador);
+
+  // Arrancar desde 0 ms acumulados (contador nuevo)
+  msAcumulados = 0;
+  tiempoInicioContador = performance.now();
+
+  // Mostrar el contador detenido en 1:00.00 antes del primer frame
+  actualizarTextoContadores("1:00.00");
+  mostrarContadores();
+
+  function tick(ahora) {
+    const msPasados = msAcumulados + (ahora - tiempoInicioContador);
+    const msRestantes = DURACION_CONTADOR - msPasados;
+
+    actualizarTextoContadores(formatearContador(msRestantes));
+
+    if (msRestantes <= 0) {
+      // Llegó a cero — mostrar 0:00.00 y parar
+      actualizarTextoContadores("0:00.00");
+      rafContador = null;
+      return;
+    }
+
+    // Pedir el siguiente frame
+    rafContador = requestAnimationFrame(tick);
   }
-  const el = document.getElementById("contador-amigo-pantalla");
-  if (el) el.style.display = "none";
+
+  rafContador = requestAnimationFrame(tick);
+}
+
+function detenerCountdown() {
+  if (rafContador) {
+    // Guardar cuántos ms pasaron hasta este momento
+    msAcumulados += performance.now() - tiempoInicioContador;
+    cancelAnimationFrame(rafContador);
+    rafContador = null;
+    // El texto queda congelado en el último valor mostrado — no tocamos nada más
+  }
+  // Si no había contador corriendo, no hacemos nada (ya está congelado o nunca arrancó)
 }
