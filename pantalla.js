@@ -29,6 +29,11 @@ function escucharCambios() {
         actualizarTextoContadores("1:00.00");
         mostrarContadores();
       }
+
+      if (payload.new.aviso_pu && payload.new.aviso_pu.startsWith("twist|")) {
+        const nombre = payload.new.aviso_pu.split("|")[1];
+        mostrarOverlayTwist(nombre);
+      }
       
       // NUEVO: detectar señal de contador
       if (payload.new.contador_amigo === "iniciar") {
@@ -387,6 +392,16 @@ function mostrarOverlayAmigo(nombre) {
   const overlay = document.getElementById("overlay-amigo");
   const texto = document.getElementById("overlay-amigo-texto");
   texto.textContent = nombre + " llama a un amigo";
+  overlay.style.display = "flex";
+  setTimeout(function() {
+    overlay.style.display = "none";
+  }, 5000);
+}
+
+function mostrarOverlayTwist(nombre) {
+  const overlay = document.getElementById("overlay-twist");
+  const texto = document.getElementById("overlay-twist-texto");
+  texto.textContent = nombre + " activa el Twist 🌀";
   overlay.style.display = "flex";
   setTimeout(function() {
     overlay.style.display = "none";
