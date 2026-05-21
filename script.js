@@ -1769,12 +1769,14 @@ async function aceptarSolicitud(id, nombre, tipo, btnEl) {
   } else if (tipo === "twist") {
     twistActivo = true;
     actualizarIndicadorTwist();
-    await dbEmitirAvisoTwist(nombre);
 
-    // Si hay una pregunta activa, recargarla en versión twist
+    // Primero recargar la pregunta en versión twist (antes de cualquier write a Supabase)
     if (categoriaActivaIndex !== null && preguntaActivaIndex !== null) {
       await loadQuestion(categoriaActivaIndex, preguntaActivaIndex);
     }
+
+    // Después emitir el aviso visual (escribe en Supabase aparte)
+    await dbEmitirAvisoTwist(nombre);
 
     if (wrap) {
       wrap.innerHTML = `
