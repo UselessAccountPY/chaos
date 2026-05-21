@@ -786,6 +786,9 @@ let ultimoMensajeConsola = ""; // ← agregá al inicio de script.js
 
 // Indica si el twist está activo para el jugador de turno
 let twistActivo = false;
+// Guardan qué pregunta está seleccionada actualmente para poder recargarla
+let categoriaActivaIndex = null;
+let preguntaActivaIndex = null;
 
 
 function actualizarConsolaHost(mensaje) {
@@ -833,6 +836,9 @@ async function loadCategory(index) {
 
 
 async function loadQuestion(categoryIndex, questionIndex) {
+  // Guardar índices para poder recargar si el twist se activa después
+  categoriaActivaIndex = categoryIndex;
+  preguntaActivaIndex = questionIndex;
   const questionOriginal = categories[categoryIndex].questions[questionIndex];
 
   // Si twist está activo Y la pregunta tiene versión twist, usarla
@@ -1761,14 +1767,14 @@ async function aceptarSolicitud(id, nombre, tipo, btnEl) {
     await dbEmitirAvisoAmigo(nombre);
 
   } else if (tipo === "twist") {
-    // Activar el modo twist
     twistActivo = true;
-
-    // Actualizar visual del panel de categorías para avisar al host
     actualizarIndicadorTwist();
-
-    // Emitir aviso visual a pantalla y jugadores
     await dbEmitirAvisoTwist(nombre);
+
+    // Si hay una pregunta activa, recargarla en versión twist
+    if (categoriaActivaIndex !== null && preguntaActivaIndex !== null) {
+      await loadQuestion(categoriaActivaIndex, preguntaActivaIndex);
+    }
 
     if (wrap) {
       wrap.innerHTML = `
