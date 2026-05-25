@@ -22,17 +22,36 @@ body {
   justify-content: center;
 }
 
-#circulo {
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  border: 4px solid #666;
+/* Logo en lobby */
+#logo-lobby {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  color: #666;
-  font-size: 1.2rem;
+}
+
+#img-logo-lobby {
+  width: 300px;
+  height: 300px;
+  /* Rotación lenta y continua en el lobby */
+  animation: logoRotarLobby 20s linear infinite;
+}
+
+#logo-juego {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#img-logo-juego {
+  width: 400px;
+  height: 400px;
+  /* Rotación lenta durante el juego cuando no hay pregunta */
+  animation: logoRotarLobby 20s linear infinite;
+}
+
+@keyframes logoRotarLobby {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 /* --- Vista pregunta: el box grande --- */
@@ -171,19 +190,7 @@ body {
   font-size: 1.2rem;
 }
 
-/* El círculo durante el juego, tamaño original */
-#circulo-juego {
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  border: 4px solid #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #666;
-  font-size: 1.2rem;
-}
+
 
 #jugadores-lobby {
   display: flex;
@@ -485,4 +492,56 @@ body {
 
 #overlay-twist .overlay-pu-texto {
   color: #c39bd3;
+}
+
+/* === Overlay de animación de selección === */
+#overlay-seleccion {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #0a0a0a;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#anim-logo-wrap {
+  /* Tamaño inicial del logo durante la animación */
+  width: 500px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* transform-origin en centro para que el zoom salga desde el medio */
+  transform-origin: center center;
+}
+
+#anim-logo-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* La flecha seleccionada se ilumina, las otras se atenúan */
+#anim-logo-wrap .flecha-apagada {
+  opacity: 0.15;
+  transition: opacity 0.4s ease;
+}
+
+#anim-logo-wrap .flecha-seleccionada {
+  opacity: 1;
+  filter: drop-shadow(0 0 20px #e30613) drop-shadow(0 0 40px #e30613);
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+/* Flash de relámpago */
+#anim-flash {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 41;
 }
