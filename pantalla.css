@@ -33,7 +33,7 @@ body {
   width: 300px;
   height: 300px;
   /* Rotación lenta y continua en el lobby */
-  animation: logoRotarLobby 20s linear infinite;
+  animation: logoRotarLobby 60s linear infinite;
 }
 
 #logo-juego {
@@ -46,7 +46,7 @@ body {
   width: 400px;
   height: 400px;
   /* Rotación lenta durante el juego cuando no hay pregunta */
-  animation: logoRotarLobby 20s linear infinite;
+  animation: logoRotarLobby 30s linear infinite;
 }
 
 @keyframes logoRotarLobby {
