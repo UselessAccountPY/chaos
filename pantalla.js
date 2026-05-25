@@ -107,12 +107,13 @@ function aplicarEstado(estado) {
     manejarRuleta(estado);
 
     if (!estado.activa) {
-      // Sin pregunta activa — mostrar logo
       document.getElementById("vista-default").classList.remove("oculto");
       return;
     }
-
-    mostrarPregunta(estado);
+    
+    // Si la pregunta acaba de activarse (pasó de false a true),
+    // mostrar la animación antes de revelar la pregunta
+    animarYMostrarPregunta(estado);
   }
 }
 
@@ -491,4 +492,155 @@ function detenerCountdown() {
     // El texto queda congelado en el último valor mostrado — no tocamos nada más
   }
   // Si no había contador corriendo, no hacemos nada (ya está congelado o nunca arrancó)
+}
+
+// ═══════════════════════════════════════════════
+// ANIMACIÓN DE SELECCIÓN DE PREGUNTA
+// ═══════════════════════════════════════════════
+
+// Ángulo de cada flecha en el SVG (en grados, desde el este, sentido horario)
+// Índice 0 = primer <g> del SVG
+const ANGULOS_FLECHAS = [0, 180, 270, 90, 315, 135, 225, 45];
+
+// Cuántos grados hay que rotar el logo para que la flecha N quede apuntando a la derecha (0°)
+// Si la flecha N está en ángulo A, hay que rotar -A para alinearla
+function anguloParaFlecha(indiceFl) {
+  return -ANGULOS_FLECHAS[indiceFl];
+}
+
+// Lee el SVG del archivo y lo inyecta inline en el overlay
+// (necesario para poder manipular los <g> internos con JS)
+async function cargarSVGInline() {
+  const wrap = document.getElementById("anim-logo-wrap");
+  if (wrap.querySelector("svg")) return; // ya cargado
+
+  const resp = await fetch("Caos_Logo.svg");
+  const texto = await resp.text();
+  // Extraer solo el <svg>...</svg> del archivo
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(texto, "image/svg+xml");
+  const svgEl = doc.querySelector("svg");
+  wrap.appendChild(svgEl);
+}
+
+// Función principal — llamala con el índice de la categoría (0-7)
+// El índice de la flecha = índice de la categoría (categoria 1 → flecha 0, etc.)
+async function animarSeleccionPregunta(indiceCategoria) {
+  const indiceFlecha = indiceCategoria; // categoría 1 = índice 0
+  await cargarSVGInline();
+
+  const overlay = document.getElementById("overlay-seleccion");
+  const wrap = document.getElementById("anim-logo-wrap");
+  const flash = document.getElementById("anim-flash");
+  const svgEl = wrap.querySelector("svg");
+  const flechas = svgEl.querySelectorAll("g"); // los 8 <g>
+
+  // Mostrar overlay
+  overlay.classList.remove("oculto");
+
+  // ── FASE 1: Spin rápido ──────────────────────────────
+  // Partimos de 0° y acumulamos vueltas rápidas
+  // Podés cambiar VUELTAS_TOTALES para más o menos giro
+  const VUELTAS_TOTALES = 5;         // cuántas vueltas completas da antes de frenar
+  const DURACION_SPIN = 1800;        // ms que dura el spin (fine-tune aquí)
+  const DURACION_ZOOM = 1200;        // ms del zoom hacia la flecha (fine-tune aquí)
+  const DURACION_FLASH = 350;        // ms del destello (fine-tune aquí)
+
+  // El ángulo final es el necesario para que la flecha elegida apunte a la derecha
+  // más las vueltas de spin
+  const anguloFinal = VUELTAS_TOTALES * 360 + anguloParaFlecha(indiceFlecha);
+
+  // Aplicar la rotación con CSS transition (ease-out = arranca rápido, frena)
+  wrap.style.transition = `transform ${DURACION_SPIN}ms cubic-bezier(0.25, 0.1, 0.1, 1)`;
+  // ↑ Fine-tune de la curva de frenado:
+  //   cubic-bezier(0.25, 0.1, 0.1, 1) = arranca rápido, frena pronunciado al final
+  //   cubic-bezier(0.4, 0, 0.2, 1)    = más suave
+  //   cubic-bezier(0.1, 0, 0.05, 1)   = frenado muy dramático
+  wrap.style.transform = `rotate(${anguloFinal}deg)`;
+
+  // ── FASE 2: Iluminar la flecha elegida a mitad del spin ──
+  setTimeout(function() {
+    flechas.forEach(function(g, i) {
+      if (i === indiceFlecha) {
+        g.classList.add("flecha-seleccionada");
+      } else {
+        g.classList.add("flecha-apagada");
+      }
+    });
+  }, DURACION_SPIN * 0.6); // se ilumina cuando ya casi frenó (fine-tune: 0.5 a 0.8)
+
+  // ── FASE 3: Zoom hacia la flecha cuando terminó el spin ──
+  setTimeout(function() {
+    // Escalar enormemente el logo — la flecha cubre toda la pantalla
+    // Podés ajustar el scale (20 = muy dramático, 10 = más sutil)
+    wrap.style.transition = `transform ${DURACION_ZOOM}ms cubic-bezier(0.4, 0, 1, 1)`;
+    // ↑ cubic-bezier(0.4, 0, 1, 1) = arranca lento, termina rápido (acelera al final)
+    //   Esto da la sensación de "caer hacia" la flecha
+
+    // El zoom mantiene la rotación actual y agrega el scale
+    wrap.style.transform = `rotate(${anguloFinal}deg) scale(20)`;
+    // ↑ scale(20): cuánto crece el logo. Fine-tune: 15 (sutil) a 30 (muy extremo)
+  }, DURACION_SPIN);
+
+  // ── FASE 4: Flash cuando la flecha cubre la pantalla ──
+  setTimeout(function() {
+    // Destello blanco
+    flash.style.transition = `opacity ${DURACION_FLASH * 0.3}ms ease-in`;
+    flash.style.opacity = "1";
+
+    // Desvanecer el flash
+    setTimeout(function() {
+      flash.style.transition = `opacity ${DURACION_FLASH * 0.7}ms ease-out`;
+      flash.style.opacity = "0";
+    }, DURACION_FLASH * 0.3);
+
+    // Ocultar overlay y mostrar la pregunta
+    setTimeout(function() {
+      overlay.classList.add("oculto");
+
+      // Resetear para la próxima vez
+      wrap.style.transition = "none";
+      wrap.style.transform = "rotate(0deg) scale(1)";
+      flechas.forEach(function(g) {
+        g.classList.remove("flecha-seleccionada", "flecha-apagada");
+      });
+      flash.style.opacity = "0";
+    }, DURACION_FLASH);
+
+  }, DURACION_SPIN + DURACION_ZOOM);
+}
+
+// Variable para saber si ya había pregunta activa (evita re-animar en cada update)
+let ultimaPreguntaActiva = false;
+
+async function animarYMostrarPregunta(estado) {
+  const esPreguntaNueva = !ultimaPreguntaActiva && estado.activa;
+  ultimaPreguntaActiva = estado.activa;
+
+  if (esPreguntaNueva && estado.fase === "juego") {
+    // Buscar el índice de la categoría (0-7) por nombre
+    // Esto asume que tus categorías están en el mismo orden que las flechas
+    // Si no, podés hardcodear un mapa nombre→índice
+    const nombresCategorias = [
+      "Categoría 1", "Categoría 2", "Categoría 3", "Categoría 4",
+      "Categoría 5", "Categoría 6", "Categoría 7", "Categoría 8"
+    ];
+    // ↑ Reemplazá estos nombres con los nombres reales de tus categorías
+    //   en el mismo orden en que aparecen en el SVG (flecha 1 → categoría 1, etc.)
+
+    const indice = nombresCategorias.indexOf(estado.categoria);
+
+    if (indice !== -1) {
+      // Mostrar la pregunta en el DOM pero oculta (el overlay la tapa)
+      mostrarPregunta(estado);
+      // Luego animar
+      await animarSeleccionPregunta(indice);
+    } else {
+      // Si la categoría no está mapeada (ej: trivia), mostrar directo sin animación
+      mostrarPregunta(estado);
+    }
+  } else {
+    // Ya había pregunta — solo actualizar sin animar (ej: cambio de nivel trivia)
+    mostrarPregunta(estado);
+  }
 }
