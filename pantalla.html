@@ -13,29 +13,39 @@
   <!-- Vista lobby -->
   <div id="vista-lobby">
     <div id="lobby-contenido">
-      <div id="circulo">
-        <p>Aquí va el símbolo de caos</p>
+      <div id="logo-lobby">
+        <img src="Caos_Logo.svg" alt="Chaos" id="img-logo-lobby">
       </div>
       <div id="jugadores-lobby"></div>
     </div>
   </div>
   
-  <!-- Vista default: el círculo solo — se usa durante el juego -->
+  <!-- Vista default: logo durante el juego -->
   <div id="vista-default" class="oculto">
-    <div id="circulo-juego">
-      <p>Aquí va el símbolo de caos</p>
+    <div id="logo-juego">
+      <img src="Caos_Logo.svg" alt="Chaos" id="img-logo-juego">
     </div>
   </div>
   
-  <!-- Vista pregunta -->
-  <div id="vista-pregunta" class="oculto">
-    <div id="box-pregunta">
-      <p id="pantalla-categoria"></p>
-      <h1 id="pantalla-titulo"></h1>
-      <p id="pantalla-descripcion"></p>
-      <div id="contador-amigo-pantalla" class="contador-amigo-pantalla"></div>
+  <!-- Overlay de animación de selección de pregunta -->
+  <div id="overlay-seleccion" class="oculto">
+    <!-- El SVG inline va acá para poder animar sus partes internas -->
+    <div id="anim-logo-wrap">
+      <!-- El SVG se inyecta por JS para poder acceder a los <g> -->
     </div>
+    <!-- Flash de relámpago -->
+    <div id="anim-flash"></div>
   </div>
+    
+    <!-- Vista pregunta -->
+    <div id="vista-pregunta" class="oculto">
+      <div id="box-pregunta">
+        <p id="pantalla-categoria"></p>
+        <h1 id="pantalla-titulo"></h1>
+        <p id="pantalla-descripcion"></p>
+        <div id="contador-amigo-pantalla" class="contador-amigo-pantalla"></div>
+      </div>
+    </div>  
 
   <!-- Vista dados -->
   <div id="vista-dados-pantalla" class="oculto">
