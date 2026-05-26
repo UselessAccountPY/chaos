@@ -159,6 +159,13 @@ async function animarSeleccionPregunta(indiceFlecha, callbackFin) {
 
   // FASE 5 — Revelar la pregunta
   await new Promise(r => setTimeout(r, DURACION_FLASH * 0.5));
+
+  // Primero llamar el callback (muestra la pregunta en el DOM)
+  // antes de ocultar el overlay para que no haya flash de pantalla vacía
+  if (callbackFin) callbackFin();
+
+  // Pequeño delay para que el DOM se pinte antes de quitar el overlay
+  await new Promise(r => setTimeout(r, 50));
   overlay.classList.add("oculto");
 
   // Resetear para la próxima vez
@@ -166,25 +173,22 @@ async function animarSeleccionPregunta(indiceFlecha, callbackFin) {
   wrap.style.transform  = "rotate(0deg) scale(1)";
   flechas.forEach(g => g.classList.remove("flecha-seleccionada", "flecha-apagada"));
 
-  // Avisar que terminó
   animacionCorriendo = false;
-  if (callbackFin) callbackFin();
 }
 
 async function animarYMostrarPregunta(estado) {
   const esPreguntaNueva = !ultimaPreguntaActiva && estado.activa;
   ultimaPreguntaActiva  = estado.activa;
 
-  // ↓ Reemplazá con los nombres reales de tus categorías, en el orden de las flechas del SVG
   const MAPA_CATEGORIAS = [
-    "Categoría 1",   // flecha 0 → derecha
-    "Categoría 2",   // flecha 1 → izquierda
-    "Categoría 3",   // flecha 2 → arriba
-    "Categoría 4",   // flecha 3 → abajo
-    "Categoría 5",   // flecha 4 → diagonal arriba-derecha
-    "Categoría 6",   // flecha 5 → diagonal abajo-izquierda
-    "Categoría 7",   // flecha 6 → diagonal arriba-izquierda
-    "Categoría 8",   // flecha 7 → diagonal abajo-derecha
+    "Categoría 1",
+    "Categoría 2",
+    "Categoría 3",
+    "Categoría 4",
+    "Categoría 5",
+    "Categoría 6",
+    "Categoría 7",
+    "Categoría 8",
   ];
 
   const indice = MAPA_CATEGORIAS.indexOf(estado.categoria);
@@ -193,14 +197,12 @@ async function animarYMostrarPregunta(estado) {
   if (puedeAnimar) {
     animacionCorriendo = true;
 
-    // Preparar la pregunta en el DOM pero todavía tapada por el overlay
-    mostrarPregunta(estado);
-
-    // Correr la animación — la pregunta se revela al final
-    await animarSeleccionPregunta(indice, null);
+    // Correr la animación — mostrarPregunta va dentro como callback al final
+    await animarSeleccionPregunta(indice, function() {
+      mostrarPregunta(estado);
+    });
 
   } else {
-    // Sin animación: trivia, actualización de nivel, o ya estaba activa
     mostrarPregunta(estado);
   }
 }
@@ -236,12 +238,16 @@ function aplicarEstado(estado) {
     manejarRuleta(estado);
 
     if (!estado.activa) {
-      document.getElementById("vista-default").classList.remove("oculto");
+      // Solo mostrar default si no hay animación corriendo
+      if (!animacionCorriendo) {
+        document.getElementById("vista-default").classList.remove("oculto");
+      }
       return;
     }
-    
-    // Si la pregunta acaba de activarse (pasó de false a true),
-    // mostrar la animación antes de revelar la pregunta
+  
+    // Si hay animación corriendo, no interrumpir
+    if (animacionCorriendo) return;
+  
     animarYMostrarPregunta(estado);
   }
 }
