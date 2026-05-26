@@ -188,14 +188,14 @@ async function animarYMostrarPregunta(estado) {
   ultimaPreguntaActiva = estado.activa;
 
   const MAPA_CATEGORIAS = [
-    "Categoría 1",
-    "Categoría 2",
-    "Categoría 3",
-    "Categoría 4",
-    "Categoría 5",
-    "Categoría 6",
-    "Categoría 7",
-    "Categoría 8",
+    "Perder",
+    "Pelada",
+    "Suerte",
+    "Contrarreloj",
+    "Versus",
+    "Habilidad",
+    "Maldición o Bendición?",
+    "Trivia",
   ];
 
   const indice = MAPA_CATEGORIAS.indexOf(estado.categoria);
