@@ -178,7 +178,14 @@ async function animarSeleccionPregunta(indiceFlecha, callbackFin) {
 
 async function animarYMostrarPregunta(estado) {
   const esPreguntaNueva = !ultimaPreguntaActiva && estado.activa;
-  ultimaPreguntaActiva  = estado.activa;
+  console.log("animarYMostrar llamada", {
+    esPreguntaNueva,
+    ultimaPreguntaActiva,
+    activa: estado.activa,
+    categoria: estado.categoria,
+    animacionCorriendo
+  });
+  ultimaPreguntaActiva = estado.activa;
 
   const MAPA_CATEGORIAS = [
     "Categoría 1",
@@ -192,16 +199,16 @@ async function animarYMostrarPregunta(estado) {
   ];
 
   const indice = MAPA_CATEGORIAS.indexOf(estado.categoria);
+  console.log("indice categoria:", indice, "| nombre en estado:", estado.categoria);
+
   const puedeAnimar = esPreguntaNueva && indice !== -1 && !animacionCorriendo;
+  console.log("puedeAnimar:", puedeAnimar);
 
   if (puedeAnimar) {
     animacionCorriendo = true;
-
-    // Correr la animación — mostrarPregunta va dentro como callback al final
     await animarSeleccionPregunta(indice, function() {
       mostrarPregunta(estado);
     });
-
   } else {
     mostrarPregunta(estado);
   }
