@@ -21,9 +21,9 @@ async function dbResetJugadores() {
   await sb.from("jugadores").delete().neq("id", 0);
 }
 
-async function dbSetEstado(categoria, nombre, descripcion, activa) {
+async function dbSetEstado(categoria, nombre, descripcion, activa, indiceCategoria = -1) {
   await sb.from("estado_juego")
-    .update({ categoria, nombre, descripcion, activa, modo: "normal", puntaje_activo: 0 })
+    .update({ categoria, nombre, descripcion, activa, modo: "normal", puntaje_activo: 0, indice_categoria: indiceCategoria })
     .eq("id", 1);
 }
 
