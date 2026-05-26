@@ -864,7 +864,8 @@ async function loadQuestion(categoryIndex, questionIndex) {
     categories[categoryIndex].name,
     question.text,
     question.description,
-    true
+    true,
+    categoryIndex  // ← índice numérico 0-7
   );
 
   const container = document.getElementById("question-list");
