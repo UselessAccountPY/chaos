@@ -178,31 +178,11 @@ async function animarSeleccionPregunta(indiceFlecha, callbackFin) {
 
 async function animarYMostrarPregunta(estado) {
   const esPreguntaNueva = !ultimaPreguntaActiva && estado.activa;
-  console.log("animarYMostrar llamada", {
-    esPreguntaNueva,
-    ultimaPreguntaActiva,
-    activa: estado.activa,
-    categoria: estado.categoria,
-    animacionCorriendo
-  });
-  ultimaPreguntaActiva = estado.activa;
+  ultimaPreguntaActiva  = estado.activa;
 
-  const MAPA_CATEGORIAS = [
-    "Perder",
-    "Pelada",
-    "Suerte",
-    "Contrarreloj",
-    "Versus",
-    "Habilidad",
-    "Maldición o Bendición?",
-    "Trivia",
-  ];
-
-  const indice = MAPA_CATEGORIAS.indexOf(estado.categoria);
-  console.log("indice categoria:", indice, "| nombre en estado:", estado.categoria);
-
-  const puedeAnimar = esPreguntaNueva && indice !== -1 && !animacionCorriendo;
-  console.log("puedeAnimar:", puedeAnimar);
+  // Usar el índice numérico directo — -1 significa sin animación (trivia, etc.)
+  const indice = Number(estado.indice_categoria);
+  const puedeAnimar = esPreguntaNueva && indice >= 0 && indice <= 7 && !animacionCorriendo;
 
   if (puedeAnimar) {
     animacionCorriendo = true;
